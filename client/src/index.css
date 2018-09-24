@@ -1,0 +1,438 @@
+:root {
+  --border: #d8ecff;
+  --head: #4081bf;
+  --lightBlue: #F2F6F9;
+  --textColor: #5f81a2;
+  --offWhite: #f9f7f7;
+
+  /* button colors */
+  --blue: #7bbaf9;
+  --darkBlue: #0080ff;
+  --darkGreen: #1fd199;
+  --darkRed: #ff0000;
+  --green: #7affd3;
+  --red: #ff8989;
+}
+
+html,
+body {
+  color: var(--textColor);
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 100;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+}
+
+* {
+  box-sizing: border-box
+}
+
+/* general */
+.flexRow {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.flexCol {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.fullSize {
+  height: 100%;
+  width: 100%;
+}
+
+.fullHeight {
+  height: 100%;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.noMargins {
+  margin: 0;
+}
+
+.listGroup {
+
+}
+
+.listHeading {
+  color: var(--head);
+  font-size: 1.6em;
+  margin-bottom: 0.2em;
+}
+
+.listGroup  p {
+  margin: 0;
+}
+
+.oneLineInfo {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.oneLineInfo p {
+  margin: 0;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--border); 
+  background: var(--offWhite); 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--head); 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--head); 
+}
+
+/* container */
+.container {
+  width: 100vw;
+}
+
+.profileContainer {
+  /* background-color: var(--lightBlue); */
+  padding: 0 4em;
+}
+
+/* top */
+.top {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border);
+  padding: 4em 1em 1em 1em;
+  width: 100%;
+}
+
+/* doctorImage */
+.doctorImage {
+  border-radius: 50%;
+  height: 16em;
+  overflow: hidden;
+  width: 16em;
+}
+
+.doctorImage img {
+  height: 100%;
+}
+
+/* topRight */
+.topRight {
+  width: 37em;
+}
+
+.topRight > * {
+  justify-content: flex-start;
+  min-height: 5em;
+  padding: 0 3rem;
+  width: 100%;
+}
+
+/* .doctorName */
+.doctorName p {
+  color: var(--head);
+  font-size: 2.4em;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* topRightTop */
+.topRightTop > * {
+  flex-grow: 1;
+}
+
+.topRightTop > div > p {
+  margin: 0;
+}
+
+/* topRightBottom */
+.topRightBottom {
+  align-items: flex-start;
+}
+
+.topRightBottom > * {
+  height: 100%;
+  width: 50%;
+}
+
+.topRightBottom > *  > p {
+  margin: 0;
+}
+
+/* bottom */
+.bottom {
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: 2em;
+}
+
+.bottom > * {
+  padding: 1em 0;
+}
+
+/* bottomRight */
+.bottomRight {
+  width: 60%;
+}
+
+.bottomLeft {
+  widows: 40%;
+}
+
+.bottomRightBody {
+  width: 100%;
+  align-items: flex-start;
+}
+
+.bottomRightBody > * {
+  height: 100%;
+  width: 50%;
+}
+
+.even {
+  background-color: var(--textColor);
+  color: #fff;
+}
+
+..bottomRightBody > div {
+  overflow-y: scroll
+}
+
+.bottomRightBody > div > p {
+  margin: 0;
+}
+
+.bottomLeft {
+  padding-left: 3em;
+}
+
+.bottomLeftSection {
+  width: 18em;
+}
+
+
+
+/* topRightEdit */
+.topRightEdit {
+  align-items: flex-start;
+  width: 34rem;
+  overflow-y: scroll;
+  position: relative;
+  height: 34em;
+}
+
+.topRightEditLiner {
+  position: absolute;
+  top: 0;
+}
+
+.topRightEdit > * {
+  justify-content: flex-start;
+  padding: 0 3rem;
+  width: 100%;
+}
+
+.listGroupEdit {
+  
+}
+
+.listGroupEdit > * {
+  font-size: 1.4rem;
+}
+
+.listGroupEdit > * {
+  margin: 0;
+}
+
+.listGroupEdit.even {
+  background-color: var(--border);
+}
+
+.listHeadingEdit {
+  justify-content: space-between;
+}
+
+.listGroupEdit .listHeadingEdit {
+  color: var(--head);
+  font-size: 1.6rem;
+  margin: 0.2em 0;
+}
+
+.listGroupEditChildren {
+    max-height: 8em;
+    overflow-y: scroll;
+}
+
+.incrementBtn {
+  color: #5f81a2;
+  margin-right: 1rem;
+}
+
+.minus:hover,
+.cancel:hover {
+  color: #e36f6f;
+  cursor: pointer;
+}
+
+.plus,
+.cancel {
+  font-size: 1.4rem;
+}
+
+.plus:hover,
+.check:hover {
+  color: #73c673;
+  cursor: pointer;
+}
+
+.editSection {
+  justify-content: space-between
+}
+
+.editInput {
+  background-color: transparent;
+  border-bottom-width: 2px;
+  border-width: 0px;
+  border: 1px solid #5f81a2;
+  color: #5f81a2;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 100;
+  padding: 4px;
+  width: 10em;
+}
+
+.editInput::placeholder {
+  color: #5f81a2;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+.check {
+  font-size: 1.8rem;
+}
+
+.oneLineInfoEdit {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.selectBox {
+  background-color: transparent;
+  border: none;
+  color: #5f81a2;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 100;
+}
+
+option {
+  background-color: #5f81a2;
+  color: #fff;
+  font-weight: 100;
+}
+
+option:hover {
+  background-color: #73c673;
+}
+
+.select-items div:hover, .same-as-selected {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+/* butttons */
+.btnBox {
+  justify-content: flex-start
+}
+
+.btnBox > * {
+  margin-right: 0.6em;
+}
+
+.btn {
+  border-radius: 5%;
+  cursor: pointer;
+  display: inline-block;
+  height: 1.5rem;
+  overflow: hidden;
+  position: relative;
+  width: 1.5rem;
+}
+
+.hoverColor {
+  left: -100%;
+  position: absolute;
+}
+
+.btn p {
+  color: #000;
+  font-size: 14px;
+  margin: 0;
+  position: relative;
+  text-align: center;
+  top: 4px;
+  z-index: 2;
+}
+
+.btn:hover > .hoverColor {
+  bottom: -20%;
+  left: -20%;
+}
+
+.hoverColor {
+  border-radius: 40%;
+  bottom: -150%;
+  height: 180%;
+  left: -150%;
+  transition: all 0.3s;
+  width: 150%;
+}
+
+.greenBtn {
+  background-color: var(--green);
+}
+
+.greenBtn .hoverColor {
+  background-color: var(--darkGreen);
+}
+
+.redBtn {
+  background-color: var(--red);
+}
+
+.redBtn .hoverColor {
+  background-color: var(--darkRed);
+}
+
+.blueBtn {
+  background-color: var(--blue);
+}
+
+.blueBtn .hoverColor {
+  background-color: var(--darkBlue);
+}
