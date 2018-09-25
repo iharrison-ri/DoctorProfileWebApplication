@@ -3,18 +3,20 @@ import React, { Component } from 'react';
 import { Consumer } from '../store';
 import { update } from '../util/methods.js';
 
-import Btn from './Btn';
-
 // actions
 import {
     EDIT_NAME,
     ADD_DETAILS_ENTRY,
     REMOVE_DETAILS_ENTRY,
     EDIT_DROPDOWN,
-    TOGGLE_NAME_EDITOR
+    TOGGLE_NAME_EDITOR,
+    TOGGLE_SLIDER
 } from '../store/actions.js';
 
-class EditPage extends Component {
+import Btn from './Btn';
+import RangeSlider from './RangeSlider';
+
+class Edit extends Component {
     state = {
         
     }
@@ -23,8 +25,6 @@ class EditPage extends Component {
         return (
         <Consumer>
             {value => {
-                console.log(value);
-                
                 const { profiles, dispatch, editName, profileEditId } = value;
                 const { name, details } =  profiles[profileEditId];
                 const detailsObjKeys = Object.keys(details);
@@ -61,22 +61,36 @@ class EditPage extends Component {
                             </div>
 
                             {detailsObjKeys.map((fieldName, index) => {
-                                if(details[fieldName].isList === false){
+                                const { isList, hasSlider, name, options, value, sliderValues, showSlider } = details[fieldName];
+                                if(isList === false){
                                     return (
                                     <div key={index} className="listGroupEdit">
+                                        { (hasSlider === true && showSlider) ? <RangeSlider fieldName={fieldName} profileEditId={profileEditId} sliderValues={sliderValues} /> : null }
                                         <div className="oneLineInfoEdit">
-                                            <p className="listHeadingEdit"> { details[fieldName].name } </p>
-                                            <select
-                                                onBlur={update.bind(this, {actionType: EDIT_DROPDOWN, dispatch, fieldName, profileEditId })}
-                                                className="selectBox"
-                                                name=""
-                                                id="">
-                                                {(details[fieldName].options) ? (
-                                                    details[fieldName].options.map((fieldOption, i) => (<option key={i} value=""> { fieldOption } </option>))
+                                            <p className="listHeadingEdit"> { name } </p>
+                                            {
+                                                hasSlider ? (
+                                                    <div className="pointer" >
+                                                        <p
+                                                            onClick={ hasSlider ? () => {
+                                                                dispatch({ type: TOGGLE_SLIDER, payload: { field: fieldName, index: profileEditId } })
+                                                            } : null }
+                                                        >{value} <i className="fas fa-angle-down"></i></p>
+                                                    </div>
                                                 ) : (
-                                                    <option> { details[fieldName].value } </option>
-                                                )}
-                                            </select>
+                                                    <select
+                                                        onBlur={update.bind(this, {actionType: EDIT_DROPDOWN, dispatch, fieldName, profileEditId })}
+                                                        className="selectBox"
+                                                        name=""
+                                                        id="">
+                                                        {(options) ? (
+                                                            options.map((fieldOption, i) => (<option key={i} value=""> { fieldOption } </option>))
+                                                        ) :  (
+                                                            <option> {value } </option>
+                                                        )}
+                                                    </select>
+                                                )
+                                            }
                                         </div>
                                     </div>
                                     )
@@ -132,4 +146,4 @@ class EditPage extends Component {
     }
 }
 
-export default EditPage;
+export default Edit;
