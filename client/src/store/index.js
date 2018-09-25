@@ -6,7 +6,9 @@ import {
     REMOVE_DETAILS_ENTRY,
     EDIT_DROPDOWN,
     TOGGLE_NAME_EDITOR,
-    ADD_INPUT_REFERENCE
+    ADD_INPUT_REFERENCE,
+    SET_RANGE,
+    TOGGLE_SLIDER
 } from './actions.js';
 
 const Context = React.createContext();
@@ -14,14 +16,13 @@ const Context = React.createContext();
 const reducer = (state, action) => {
     switch (action.type) {
         case EDIT_NAME:
+            console.log(state)
             const newProfiles = [...state.profiles];
             newProfiles[action.payload.id].name = action.payload.value.trim();
             return {
                 ...state,
                 editName: !state.editName,
-                profiles: [
-                    ...newProfiles
-                ]
+                profiles: newProfiles
             }
         case TOGGLE_NAME_EDITOR:
             return {
@@ -39,14 +40,14 @@ const reducer = (state, action) => {
                 ]
             }
         case ADD_DETAILS_ENTRY:
-            const newProfiles2 = { ...state.profiles };
+            const newProfiles2 = [...state.profiles];
             newProfiles2[action.payload.id].details[action.payload.ref].value.push(action.payload.value.trim());
             return {
                 ...state,
                 profiles: newProfiles2
             };
         case REMOVE_DETAILS_ENTRY:
-            const newProfiles3 = { ...state.profiles };
+            const newProfiles3 = [...state.profiles];
             newProfiles3[action.payload.id].details[action.payload.ref].value = state.profiles[action.payload.id].details[action.payload.ref].value.filter(data => data !== action.payload.item);
             return {
                 ...state,
@@ -56,6 +57,23 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 inputRefs: { ...state.inputRefs, ...action.payload }
+            }
+        case SET_RANGE:
+            const newProfiles4 = [...state.profiles]
+            newProfiles4[action.payload.index].details[action.payload.field].sliderValues.low = action.payload.low;
+            newProfiles4[action.payload.index].details[action.payload.field].sliderValues.high = action.payload.high;
+            newProfiles4[action.payload.index].details[action.payload.field].value = `${action.payload.low} - ${action.payload.high}`;
+            return {
+                ...state,
+                profiles: newProfiles4
+            }
+        case TOGGLE_SLIDER:
+            const newProfiles5 = [...state.profiles]
+            const currentBool = newProfiles5[action.payload.index].details[action.payload.field].showSlider;
+            newProfiles5[action.payload.index].details[action.payload.field].showSlider = !currentBool;
+            return {
+                ...state,
+                profiles: newProfiles5
             }
         default:
             return state
@@ -84,30 +102,40 @@ export class Provider extends Component {
                     patientAgeRange: {
                         name: 'Patient Age Range',
                         value: "12+",
-                        isList: false
+                        isList: false,
+                        hasSlider: true,
+                        sliderValues: {
+                            low: 12,
+                            high: 100
+                        },
+                        showSlider: false
                     },
                     patientExceptions: {
                         name: 'Patient Exceptions',
                         value: [ "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements" ],
-                        isList: true
+                        isList: true,
+                        hasSlider: false
                     },
                     workComp: {
                         name: 'Work Comp',
                         value: "Yes",
                         options: ["Yes", "No"],
-                        isList: false
+                        isList: false,
+                        hasSlider: false
                     },
                     auto: {
                         name: 'Auto',
                         value: "Yes",
                         options: ["Yes", "No"],
-                        isList: false
+                        isList: false,
+                        hasSlider: false
                     },
                     acuteInjuries: {
                         name: 'Acute Injuries',
                         value: "Yes",
                         options: ["Yes", "No"],
-                        isList: false
+                        isList: false,
+                        hasSlider: false
                     }
                 }
             }

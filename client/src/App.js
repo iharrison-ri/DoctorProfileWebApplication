@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 import { Provider } from './store';
 
-import ProfileTop from './components/ProfileTop';
-import ProfileBottom from './components/ProfileBottom';
-import EditPage from './components/EditPage';
+import Profile from './components/Profile';
+import Edit from './components/Edit';
+import Search from './components/Search';
 
 class App extends Component {
   render() {
@@ -12,9 +12,9 @@ class App extends Component {
       <Provider>
         <div className="container flexRow">
           <div className="profileContainer">
-            {/* <ProfileTop />
-            <ProfileBottom /> */}
-            <EditPage />
+            <Profile />
+            {/* <Edit /> */}
+            {/* <Search /> */}
           </div>
         </div>
       </Provider>

@@ -255,7 +255,7 @@ body {
 }
 
 .listGroupEdit {
-  
+  position: relative;
 }
 
 .listGroupEdit > * {
@@ -435,4 +435,66 @@ option:hover {
 
 .blueBtn .hoverColor {
   background-color: var(--darkBlue);
+}
+
+/* RangeSlider */
+.slidecontainer {
+  background-color: #fff;
+  border: 1px solid var(--blue);
+  font-size: 1em;
+  padding: 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 10em;
+  z-index: 200;
+}
+
+.submitRangeBtn {
+  background-color: var(--darkBlue);
+  border-radius: 2px;
+  color: #fff;
+  margin-bottom: 1em;
+  opacity: 0.8;
+  padding: 0.4em;
+  transition: opacity .2s;
+}
+
+.submitRangeBtn p {
+  margin: 0;
+}
+
+.slider {
+  -webkit-appearance: none;
+  -webkit-transition: .2s;
+  background: #7bbaf9;
+  border-radius: 10px;
+  height: 6px;
+  margin: 1em 0;
+  opacity: 0.7;
+  outline: none;
+  transition: opacity .2s;
+  width: 100%;
+}
+
+.slider:hover,
+.submitRangeBtn:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #0080ff;
+  border-radius: 2px;
+  cursor: pointer;
+  height: 25px;
+  width: 25px;
+}
+
+.slider::-moz-range-thumb {
+  background: #0080ff;
+  cursor: pointer;
+  height: 25px;
+  width: 25px;
 }
