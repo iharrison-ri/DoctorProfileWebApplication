@@ -8,7 +8,7 @@ class ProfileBottom extends Component {
     return (
       <Consumer>
           {value => {
-            const { expertise, details } =  value.profiles[0];
+            const { expertise, details } = this.props.profile || value.profiles[0];
             const detailsKeys = Object.keys(details);
             
             const expertiseColumns = getColumns(expertise);
@@ -41,7 +41,7 @@ class ProfileBottom extends Component {
                                     return (
                                         <div key={index} className="listGroup">
                                             <p className="listHeading">{ details[data].name }</p>
-                                            {details[data].value.map(data => <p>{ data }</p>)}
+                                            {details[data].value.map((data, index) => <p key={index}>{ data }</p>)}
                                         </div>
                                     )
                                 }

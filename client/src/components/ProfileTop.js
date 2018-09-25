@@ -2,16 +2,28 @@ import React, { Component } from 'react';
 
 import { Consumer } from '../store';
 
+import Img1 from "../img/doctor1.PNG";
+import Img2 from "../img/doctor1.PNG";
+import Img3 from "../img/doctor1.PNG";
+import Img4 from "../img/doctor1.PNG";
+
 class ProfileTop extends Component {
   render() {
     return (
       <Consumer>
           {value => {
-            const { name, apmAbbrev, isPartner, dob, age, officeLocations, surgicalLocations } =  value.profiles[0];
+            let { name, apmAbbrev, isPartner, dob, age, officeLocations, surgicalLocations, img, id } = this.props.profile ||  value.profiles[0];
+            
+            // let profileImg = Img1;
+            // if(id === 1){ img = Img1 }
+            // else if(id === 2){ img = Img2 }
+            // else if(id === 3){ img = Img3 }
+            // else if(id === 4){ img = Img4 }
+            
             return (
               <div className="top flexRow">
                   <div className="doctorImage">
-                      <img src="./img/doctor.png" alt="" />
+                      <img src={img} alt="" />
                   </div>
                   <div className="topRight">
                       <div className="doctorName flexRow">
