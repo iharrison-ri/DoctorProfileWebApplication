@@ -3,15 +3,19 @@ import React, { Component } from 'react';
 import { Consumer } from '../store';
 
 class ProfileTop extends Component {
+  state = {
+
+  }
   render() {
     return (
       <Consumer>
           {value => {
-            const { name, apmAbbrev, isPartner, dob, age, officeLocations, surgicalLocations } =  value.profiles[0];
+            let { name, apmAbbrev, isPartner, dob, age, officeLocations, surgicalLocations, img, id } = this.props.profile ||  value.profiles[0];
+            const style = (this.props.addStlye) ? this.props.addStlye : {};
             return (
-              <div className="top flexRow">
+              <div className="top flexRow" style={style}>
                   <div className="doctorImage">
-                      <img src="./img/doctor.png" alt="" />
+                      <img src={img} alt="" />
                   </div>
                   <div className="topRight">
                       <div className="doctorName flexRow">

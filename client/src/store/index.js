@@ -8,7 +8,8 @@ import {
     TOGGLE_NAME_EDITOR,
     ADD_INPUT_REFERENCE,
     SET_RANGE,
-    TOGGLE_SLIDER
+    TOGGLE_SLIDER,
+    DOCTOR_SELECTED
 } from './actions.js';
 
 const Context = React.createContext();
@@ -16,9 +17,8 @@ const Context = React.createContext();
 const reducer = (state, action) => {
     switch (action.type) {
         case EDIT_NAME:
-            console.log(state)
             const newProfiles = [...state.profiles];
-            newProfiles[action.payload.id].name = action.payload.value.trim();
+            newProfiles[state.profileEditId].name = action.payload.value.trim();
             return {
                 ...state,
                 editName: !state.editName,
@@ -32,7 +32,7 @@ const reducer = (state, action) => {
         case EDIT_DROPDOWN:
             const newProfiles1 = [...state.profiles];
             const keys = Object.keys(action.payload);
-            newProfiles1[action.payload.id].details[keys[0]].value = action.payload[keys[0]];
+            newProfiles1[state.profileEditId].details[keys[0]].value = action.payload[keys[0]];
             return {
                 ...state,
                 profiles: [
@@ -41,14 +41,14 @@ const reducer = (state, action) => {
             }
         case ADD_DETAILS_ENTRY:
             const newProfiles2 = [...state.profiles];
-            newProfiles2[action.payload.id].details[action.payload.ref].value.push(action.payload.value.trim());
+            newProfiles2[state.profileEditId].details[action.payload.ref].value.push(action.payload.value.trim());
             return {
                 ...state,
                 profiles: newProfiles2
             };
         case REMOVE_DETAILS_ENTRY:
             const newProfiles3 = [...state.profiles];
-            newProfiles3[action.payload.id].details[action.payload.ref].value = state.profiles[action.payload.id].details[action.payload.ref].value.filter(data => data !== action.payload.item);
+            newProfiles3[state.profileEditId].details[action.payload.ref].value = state.profiles[action.payload.id].details[action.payload.ref].value.filter(data => data !== action.payload.item);
             return {
                 ...state,
                 profiles: newProfiles3
@@ -60,9 +60,9 @@ const reducer = (state, action) => {
             }
         case SET_RANGE:
             const newProfiles4 = [...state.profiles]
-            newProfiles4[action.payload.index].details[action.payload.field].sliderValues.low = action.payload.low;
-            newProfiles4[action.payload.index].details[action.payload.field].sliderValues.high = action.payload.high;
-            newProfiles4[action.payload.index].details[action.payload.field].value = `${action.payload.low} - ${action.payload.high}`;
+            newProfiles4[state.profileEditId].details[action.payload.field].sliderValues.low = action.payload.low;
+            newProfiles4[state.profileEditId].details[action.payload.field].sliderValues.high = action.payload.high;
+            newProfiles4[state.profileEditId].details[action.payload.field].value = `${action.payload.low} - ${action.payload.high}`;
             return {
                 ...state,
                 profiles: newProfiles4
@@ -70,10 +70,15 @@ const reducer = (state, action) => {
         case TOGGLE_SLIDER:
             const newProfiles5 = [...state.profiles]
             const currentBool = newProfiles5[action.payload.index].details[action.payload.field].showSlider;
-            newProfiles5[action.payload.index].details[action.payload.field].showSlider = !currentBool;
+            newProfiles5[state.profileEditId].details[action.payload.field].showSlider = !currentBool;
             return {
                 ...state,
                 profiles: newProfiles5
+            }
+        case DOCTOR_SELECTED:
+            return {
+                ...state,
+                profileEditId: action.payload
             }
         default:
             return state
@@ -86,10 +91,17 @@ export class Provider extends Component {
         editName: false,
         inputRefs: {},
         profileEditId: 0,
+        linkInfo: {
+            save:   { url: `/profile/${this.profileEditId}`, text: "Save"},
+            profile: { url: `/profile/${this.profileEditId}`, text: "Back To Profile"},
+            edit:    { url: `/edit/${this.profileEditId}`,     text: "Edit Profile" },
+            search:{ url: "/",                                          text: "Back To Search" }
+        },
         profiles: [
             {
                 name: "Kris C. Dodson",
                 id: 0,
+                img: "./img/doctor1.png",
                 suffix: "MD",
                 apmAbbrev: "CDOD",
                 isPartner: true,
@@ -97,7 +109,166 @@ export class Provider extends Component {
                 age: "41",
                 officeLocations: [ "Center City", "Bryn Mawr" ],
                 surgicalLocations: [ "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center" ],
-                expertise: [ "AC Joint Seperation", "Achilles Tendon Rupture", "ACL", "Athletic Injuries", "Distal Bicep Tendon Tear/Rupture", "Distal Tricep Tear", "Elbow Epicondylitis", "Elbow Lateral Ligament Tear", "Exertional Compartment Syndrome", "Hamstring Tear/Rupture", "Loose Bodies", "Loose Bodies in Elbow", "Medial Meniscus Tear", "Patellar Fracture", "Pectoralis Major Rupture", "Quad Tear/Rupture", "Rotator Cuff Repair", "Shoulder Dislocation", "Shoulder Fracture", "Shoulder Impingement", "Shoulder Labrum Tear", "Tommy John Surgery", "Total Shoulder Replacement", ],
+                expertise: [ "AC Joint Seperation", "Achilles Tendon Rupture", "ACL", "Athletic Injuries", "Distal Bicep Tendon Tear/Rupture", "Distal Tricep Tear", "Elbow Epicondylitis", "Elbow Lateral Ligament Tear", "Exertional Compartment Syndrome", "Hamstring Tear/Rupture", "Loose Bodies", "Loose Bodies in Elbow", "Medial Meniscus Tear", "Patellar Fracture", "Pectoralis Major Rupture", "Quad Tear/Rupture", "Rotator Cuff Repair", "Shoulder Dislocation", "Shoulder Fracture", "Shoulder Impingement", "Shoulder Labrum Tear", "Tommy John Surgery", "Total Shoulder Replacement" ],
+                details: {
+                    patientAgeRange: {
+                        name: 'Patient Age Range',
+                        value: "12+",
+                        isList: false,
+                        hasSlider: true,
+                        sliderValues: {
+                            low: 12,
+                            high: 100
+                        },
+                        showSlider: false
+                    },
+                    patientExceptions: {
+                        name: 'Patient Exceptions',
+                        value: [ "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements" ],
+                        isList: true,
+                        hasSlider: false
+                    },
+                    workComp: {
+                        name: 'Work Comp',
+                        value: "Yes",
+                        options: ["Yes", "No"],
+                        isList: false,
+                        hasSlider: false
+                    },
+                    auto: {
+                        name: 'Auto',
+                        value: "Yes",
+                        options: ["Yes", "No"],
+                        isList: false,
+                        hasSlider: false
+                    },
+                    acuteInjuries: {
+                        name: 'Acute Injuries',
+                        value: "Yes",
+                        options: ["Yes", "No"],
+                        isList: false,
+                        hasSlider: false
+                    }
+                }
+            },
+            {
+                name: "Sarah G. Patterson",
+                id: 1,
+                img: "./img/doctor2.png",
+                suffix: "MD",
+                apmAbbrev: "CDOD",
+                isPartner: true,
+                dob: "3/11/1977",
+                age: "41",
+                officeLocations: [ "Center City", "Bryn Mawr" ],
+                surgicalLocations: [ "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center" ],
+                expertise: [ "AC Joint Seperation", "Achilles Tendon Rupture", "ACL", "Athletic Injuries", "Distal Bicep Tendon Tear/Rupture", "Distal Tricep Tear", "Elbow Epicondylitis", "Elbow Lateral Ligament Tear", "Exertional Compartment Syndrome", "Hamstring Tear/Rupture", "Loose Bodies", "Loose Bodies in Elbow", "Medial Meniscus Tear", "Patellar Fracture", "Pectoralis Major Rupture", "Quad Tear/Rupture", "Rotator Cuff Repair", "Shoulder Dislocation", "Shoulder Fracture", "Shoulder Impingement", "Shoulder Labrum Tear", "Tommy John Surgery", "Total Shoulder Replacement" ],
+                details: {
+                    patientAgeRange: {
+                        name: 'Patient Age Range',
+                        value: "12+",
+                        isList: false,
+                        hasSlider: true,
+                        sliderValues: {
+                            low: 12,
+                            high: 100
+                        },
+                        showSlider: false
+                    },
+                    patientExceptions: {
+                        name: 'Patient Exceptions',
+                        value: [ "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements" ],
+                        isList: true,
+                        hasSlider: false
+                    },
+                    workComp: {
+                        name: 'Work Comp',
+                        value: "Yes",
+                        options: ["Yes", "No"],
+                        isList: false,
+                        hasSlider: false
+                    },
+                    auto: {
+                        name: 'Auto',
+                        value: "Yes",
+                        options: ["Yes", "No"],
+                        isList: false,
+                        hasSlider: false
+                    },
+                    acuteInjuries: {
+                        name: 'Acute Injuries',
+                        value: "Yes",
+                        options: ["Yes", "No"],
+                        isList: false,
+                        hasSlider: false
+                    }
+                }
+            },
+            {
+                name: "Anthany W. Rivers",
+                id: 2,
+                img: "./img/doctor3.png",
+                suffix: "MD",
+                apmAbbrev: "CDOD",
+                isPartner: true,
+                dob: "3/11/1977",
+                age: "41",
+                officeLocations: [ "Center City", "Bryn Mawr" ],
+                surgicalLocations: [ "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center" ],
+                expertise: [ "AC Joint Seperation", "Achilles Tendon Rupture", "ACL", "Athletic Injuries", "Distal Bicep Tendon Tear/Rupture", "Distal Tricep Tear", "Elbow Epicondylitis", "Elbow Lateral Ligament Tear", "Exertional Compartment Syndrome", "Hamstring Tear/Rupture", "Loose Bodies", "Loose Bodies in Elbow", "Medial Meniscus Tear", "Patellar Fracture", "Pectoralis Major Rupture", "Quad Tear/Rupture", "Rotator Cuff Repair", "Shoulder Dislocation", "Shoulder Fracture", "Shoulder Impingement", "Shoulder Labrum Tear", "Tommy John Surgery", "Total Shoulder Replacement" ],
+                details: {
+                    patientAgeRange: {
+                        name: 'Patient Age Range',
+                        value: "12+",
+                        isList: false,
+                        hasSlider: true,
+                        sliderValues: {
+                            low: 12,
+                            high: 100
+                        },
+                        showSlider: false
+                    },
+                    patientExceptions: {
+                        name: 'Patient Exceptions',
+                        value: [ "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements" ],
+                        isList: true,
+                        hasSlider: false
+                    },
+                    workComp: {
+                        name: 'Work Comp',
+                        value: "Yes",
+                        options: ["Yes", "No"],
+                        isList: false,
+                        hasSlider: false
+                    },
+                    auto: {
+                        name: 'Auto',
+                        value: "Yes",
+                        options: ["Yes", "No"],
+                        isList: false,
+                        hasSlider: false
+                    },
+                    acuteInjuries: {
+                        name: 'Acute Injuries',
+                        value: "Yes",
+                        options: ["Yes", "No"],
+                        isList: false,
+                        hasSlider: false
+                    }
+                }
+            },
+            {
+                name: "Pam B. Jones",
+                id: 3,
+                img: "./img/doctor4.png",
+                suffix: "MD",
+                apmAbbrev: "CDOD",
+                isPartner: true,
+                dob: "3/11/1977",
+                age: "41",
+                officeLocations: [ "Center City", "Bryn Mawr" ],
+                surgicalLocations: [ "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center" ],
+                expertise: [ "AC Joint Seperation", "Achilles Tendon Rupture", "ACL", "Athletic Injuries", "Distal Bicep Tendon Tear/Rupture", "Distal Tricep Tear", "Elbow Epicondylitis", "Elbow Lateral Ligament Tear", "Exertional Compartment Syndrome", "Hamstring Tear/Rupture", "Loose Bodies", "Loose Bodies in Elbow", "Medial Meniscus Tear", "Patellar Fracture", "Pectoralis Major Rupture", "Quad Tear/Rupture", "Rotator Cuff Repair", "Shoulder Dislocation", "Shoulder Fracture", "Shoulder Impingement", "Shoulder Labrum Tear", "Tommy John Surgery", "Total Shoulder Replacement" ],
                 details: {
                     patientAgeRange: {
                         name: 'Patient Age Range',

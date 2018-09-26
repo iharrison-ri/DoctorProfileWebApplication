@@ -1,14 +1,31 @@
 import React, { Component } from 'react';
+
+import { Consumer } from '../store';
+
 import ProfileTop from './ProfileTop';
 import ProfileBottom from './ProfileBottom';
+import NavBtn from './NavBtn';
 
 class Profile extends Component {
     render() {
         return (
-            <div>
-                <ProfileTop />
-                <ProfileBottom />
-            </div>
+            <Consumer>
+                {value => {
+                    const { profiles, linkInfo, profileEditId } = value;
+                    return (<React.Fragment>
+                        <NavBtn
+                            link={linkInfo.edit.url}
+                            text={linkInfo.edit.text} />
+                        <NavBtn
+                            link={linkInfo.search.url}
+                            text={linkInfo.search.text} />
+                        <ProfileTop
+                            profile={profiles[profileEditId]} />
+                        <ProfileBottom
+                            profile={profiles[profileEditId]} />
+                    </React.Fragment>)
+                }}
+            </Consumer>
         );
     }
 }

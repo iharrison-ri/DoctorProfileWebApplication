@@ -1,12 +1,20 @@
+// bring in express and initiate it in app
 const express = require('express');
 const app = express();
+var bodyParser = require('body-parser');
 
-const PORT = process.env.PORT || 3000;
+const router = require("./sequelize");
 
-app.get('/', (req, res, next) => {
-    res.send('hey')
-})
+//middleware
+// create application/json parser
+var jsonParser = bodyParser.json();
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
+app.use(jsonParser);
+app.use(urlencodedParser);
+app.use('/', router);
 
-app.listen(PORT, () => {
-    console.log(`app running on port ${PORT}`);
-});
+// the port the app will be running on
+const PORT = process.env.PORT || 4000;
+// connect to the node backend
+app.listen(PORT, () => console.log(`app running on port ${PORT}!!`))
