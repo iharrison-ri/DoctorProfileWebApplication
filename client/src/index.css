@@ -136,6 +136,7 @@ a {
 }
 
 .editProfileBtn {
+  border: 1px solid #48a5fe;
   width: 100%;
   height: 4em;
   color: #fff;
@@ -543,7 +544,13 @@ option:hover {
   background-color: var(--darkBlue);
   color: #fff;
   height: 100%;
-  width: 2em;
+  width: 6em;
+  opacity: 0.6;
+  transition: all 0.5s;
+}
+
+.searchBar .searchBtn:hover {
+  opacity: 1;
 }
 
 .searchBar input {
@@ -553,15 +560,23 @@ option:hover {
   font-weight: 100;
   height: 100%;
   padding-left: 1rem;
-  width: 80%;
+  width: 100%;
+  border: 1px solid var(--blue);
 }
 
 .searchProfile {
   height: 45em;
   overflow-y: scroll;
-  border-top: 1px solid var(--darkBlue);
 }
 
 .searchProfile .top:hover {
   background-color: var(--border);
+}
+
+.doctorImage img {
+  transition: all 0.5s;
+}
+
+.searchProfile .top:hover > .doctorImage img {
+  transform: scale(1.1)
 }

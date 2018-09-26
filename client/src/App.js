@@ -6,7 +6,6 @@ import { Provider } from './store';
 import Profile from './components/Profile';
 import Edit from './components/Edit';
 import Search from './components/Search';
-import Nav from './components/Nav';
 
 class App extends Component {
   render() {

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import Img from 'react-image'
 
 import { Consumer } from '../store';
 import { update } from '../util/methods.js';
+
+import NavBtn from './NavBtn';
 
 // actions
 import {
@@ -15,7 +15,7 @@ import {
     TOGGLE_SLIDER
 } from '../store/actions.js';
 
-import Btn from './Btn';
+import BtnEditField from './BtnEditField';
 import RangeSlider from './RangeSlider';
 
 class Edit extends Component {
@@ -27,20 +27,19 @@ class Edit extends Component {
         return (
         <Consumer>
             {value => {
-                const { profiles, dispatch, editName, profileEditId } = value;
-                const profileIndex = this.props.match.params.index;
-                const { name, details, img } =  profiles[profileIndex];
+                const { profiles, dispatch, editName, profileEditId, linkInfo } = value;
+                const { name, details, img } =  profiles[profileEditId];
                 const detailsObjKeys = Object.keys(details);
-                const saveLink = `/profile/${profileIndex}`;
                 return (
                     <div className="flexCol">
-                        <div className="editProfileBtn flexRow">
-                            <Link to={saveLink}>
-                                <p>Save</p>
-                            </Link>
-                        </div>
+                        <NavBtn
+                            link={linkInfo.profile.url}
+                            text={linkInfo.profile.text} />
+                        <NavBtn
+                            link={linkInfo.save.url}
+                            text={linkInfo.save.text} />
                         <div className="top flexRow">
-                            <div id="hey" className="doctorImage">
+                            <div  className="doctorImage">
                                 <img src={img} alt="" />
                             </div>
                             <div className="topRightEdit flexCol">
@@ -48,7 +47,7 @@ class Edit extends Component {
 
                                     <div className="listGroupEdit">
                                     {(editName) ? (<div className="editSection flexRow">
-                                            <Btn
+                                            <BtnEditField
                                                 profileEditId={profileEditId}
                                                 id='nameField'
                                                 fieldName='name'
@@ -59,7 +58,7 @@ class Edit extends Component {
                                                 btnColor='blue'
                                                 isInput={true}
                                                 placeHolder={name} />
-                                        </div>) : (<Btn
+                                        </div>) : (<BtnEditField
                                                             profileEditId={profileEditId}
                                                             actionType={TOGGLE_NAME_EDITOR}
                                                             dispatch={dispatch}
@@ -75,7 +74,10 @@ class Edit extends Component {
                                     if(isList === false){
                                         return (
                                         <div key={index} className="listGroupEdit">
-                                            { (hasSlider === true && showSlider) ? <RangeSlider fieldName={fieldName} profileEditId={profileEditId} sliderValues={sliderValues} /> : null }
+                                            { (hasSlider === true && showSlider) ? <RangeSlider
+                                                                                                            fieldName={fieldName}
+                                                                                                            profileEditId={profileEditId}
+                                                                                                            sliderValues={sliderValues} /> : null }
                                             <div className="oneLineInfoEdit">
                                                 <p className="listHeadingEdit"> { name } </p>
                                                 {
@@ -116,7 +118,7 @@ class Edit extends Component {
                                                 <div> { details[fieldName].name } </div>
                                             </div>
                                             <div className="editSection flexRow">
-                                                <Btn
+                                                <BtnEditField
                                                     profileEditId={profileEditId}
                                                     actionType={ADD_DETAILS_ENTRY}
                                                     dispatch={dispatch}
@@ -127,7 +129,7 @@ class Edit extends Component {
                                             </div>
                                             <div className="listGroupEditChildren">
                                                 {details[fieldName].value.map((value, i) => (
-                                                    <Btn
+                                                    <BtnEditField
                                                         profileEditId={profileEditId}
                                                         actionType={REMOVE_DETAILS_ENTRY}
                                                         dispatch={dispatch}
