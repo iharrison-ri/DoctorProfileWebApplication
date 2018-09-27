@@ -3,17 +3,30 @@ import {
     ADD_DETAILS_ENTRY,
     REMOVE_DETAILS_ENTRY,
     EDIT_DROPDOWN,
-    ADD_INPUT_REFERENCE
+    TOGGLE_NAME_EDITOR
 } from '../store/actions';
 
+// middleware for the dispatch in the context
 export const update = (params, e) => {
+    // the payload to be deployed
     let payload;
-    const { actionType, dispatch, fieldName, name, reference, item, profileEditId } = params;
-
-    //sets the payload if needed
+    // get avaliable variables from the params
+    const { actionType, dispatch, fieldName, name, reference, item, profileEditId, data } = params;
+    //builds the payload for deployment in the dispatch
     if(actionType === EDIT_NAME){
-        payload = { value: document.getElementById(`${fieldName}Field`).value, id: profileEditId };
+        // this toggles the input when editing the name
+        const id = `input:${data}`;
+        const value = document.getElementById("input:" + data).value;
+        payload = { value, fieldName, data };
+
+        //close the editor input box
+        const action2 = {
+            type: TOGGLE_NAME_EDITOR,
+            payload: params.fieldName
+        }
+        dispatch(action2)
     } else if(actionType === EDIT_DROPDOWN){
+        // this changes the value in the dropdown
         const length = e.target.options.length;
         for(let i = 0; i < length; i++){
             if(e.target.options[i].selected){
@@ -21,6 +34,7 @@ export const update = (params, e) => {
             }
         }
     } else if(actionType === ADD_DETAILS_ENTRY){
+        // this adds an option in fields with lists
         let value, index, input;
         const inputs = document.getElementsByTagName("input");
         for(index in inputs){
@@ -32,17 +46,15 @@ export const update = (params, e) => {
         }
         payload = { ref: input.name, value, id: profileEditId }
     } else if(actionType === REMOVE_DETAILS_ENTRY){
+        // removes an option in fields with lists
         payload = { ref: reference, item, id: profileEditId};
-    } else if(actionType === ADD_INPUT_REFERENCE){
-        payload = params.payload;
+    } else if(actionType === TOGGLE_NAME_EDITOR){
+        // toggles the input box for editing
+        payload = params.fieldName;
     }
 
-    const action = {
-        type: actionType,
-        payload: payload
-    }
-
-    dispatch(action);
+    // dispatch the action
+    dispatch({ type: actionType, payload: payload });
 }
 
 export const btnClass = (color) => {
