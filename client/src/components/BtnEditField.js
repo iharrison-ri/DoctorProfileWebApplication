@@ -8,7 +8,7 @@ import {
 class BtnEditField extends Component {
     render(){
         // bring in the property varriables
-        const { btnColor, icon, item, name, isInput, id, placeHolder, index } = this.props;
+        const { btnColor, icon, item, name, isInput, id, placeHolder, data } = this.props;
         return  (
             <div className='btnBox flexRow'>
                 {/* this is the icon that displays */}
@@ -19,7 +19,7 @@ class BtnEditField extends Component {
                 {/* display if there is an edit item next to a pencil icon */}
                 { (item) ? (<span>{item}</span>) : null }
                 {/* display if there is an edit item next to a plus icon */}
-                { (isInput) ? (<input name={name} id={id} className="editInput" type="text" defaultValue={ placeHolder ? placeHolder : "new entry" } />) : null }
+                { (isInput) ? (<input id={"input:" + data} name={name} className="editInput" type="text" defaultValue={ placeHolder ? placeHolder : "new entry" } />) : null }
             </div>
         )
     }

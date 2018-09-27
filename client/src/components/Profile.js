@@ -13,12 +13,14 @@ class Profile extends Component {
                 {value => {
                     const { profiles, linkInfo, profileEditId } = value;
                     return (<React.Fragment>
-                        <NavBtn
-                            link={linkInfo.edit.url}
-                            text={linkInfo.edit.text} />
-                        <NavBtn
-                            link={linkInfo.search.url}
-                            text={linkInfo.search.text} />
+                        <div className="navholder flexRow">
+                            <NavBtn
+                                link={linkInfo.edit.url}
+                                text={linkInfo.edit.text} />
+                            <NavBtn
+                                link={linkInfo.search.url}
+                                text={linkInfo.search.text} />
+                        </div>
                         <ProfileTop
                             profile={profiles[profileEditId]} />
                         <ProfileBottom

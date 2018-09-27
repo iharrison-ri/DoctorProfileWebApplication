@@ -8,10 +8,10 @@ class ProfileBottom extends Component {
     return (
       <Consumer>
           {value => {
-            const { expertise, details } = this.props.profile || value.profiles[0];
+            const { expertise, details, excludedInRightSideColumn } = this.props.profile || value.profiles[0];
             const detailsKeys = Object.keys(details);
             
-            const expertiseColumns = getColumns(expertise);
+            const expertiseColumns = getColumns(details.expertise.value);
             return (
                 <div className="bottom flexRow">
                     <div className="bottomRight">
@@ -30,6 +30,9 @@ class ProfileBottom extends Component {
                     <div className="bottomLeft">
                         <div className="bottomLeftSection">
                             {detailsKeys.map((data, index) => {
+                                if(excludedInRightSideColumn.includes(data)){
+                                    return null
+                                }
                                 if( typeof details[data].value === 'string' ){
                                     return (
                                         <div key={index} className="oneLineInfo">

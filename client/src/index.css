@@ -4,6 +4,7 @@
   --lightBlue: #F2F6F9;
   --textColor: #5f81a2;
   --offWhite: #f9f7f7;
+  --blueNav: #4c6883;
 
   /* button colors */
   --blue: #7bbaf9;
@@ -118,8 +119,8 @@ a {
 }
 
 .profileContainer {
-  /* background-color: var(--lightBlue); */
-  padding: 0 4em;
+  height: 50em;
+  width: 64em;
 }
 
 /* nav bar */
@@ -133,26 +134,30 @@ a {
   border-bottom: 1px solid var(--border);
   padding: 4em 1em 1em 1em;
   width: 100%;
+  transform: scale(0.95);
+}
+
+.navholder {
+  width: 80%;
+  margin: 1em auto;
+  margin-bottom: 0;
 }
 
 .editProfileBtn {
-  border: 1px solid #48a5fe;
-  width: 100%;
-  height: 4em;
-  color: #fff;
-  background-color: var(--darkBlue);
-  opacity: 0.6;
-  transition: all 0.5s;
-}
-
-.editProfileBtn:hover {
-  opacity: 1;
+    background-color: #fff;
+    border-radius: 2em;
+    height: 2.3em;
+    margin: 0 auto;
+    width: 22em;
+    -webkit-box-shadow: 0px 8px 31px -8px rgba(170,170,170,1);
+    -moz-box-shadow: 0px 8px 31px -8px rgba(170,170,170,1);
+    box-shadow: 0px 8px 31px -8px rgba(170,170,170,1);
 }
 
 .editProfileBtn > * {
   text-decoration: none;
-  color: #fff;
-  font-size: 1.2em;
+  color: var(--textColor);
+  font-size: 1em;
 }
 
 .editProfileBtn a {
@@ -220,6 +225,8 @@ a {
   align-items: flex-start;
   justify-content: flex-start;
   min-height: 2em;
+  transform: scale(0.9);
+  padding: 0 2em;
 }
 
 .bottom > * {
@@ -229,10 +236,14 @@ a {
 /* bottomRight */
 .bottomRight {
   width: 60%;
+  overflow-y: scroll;
+  height: 25em;
 }
 
 .bottomLeft {
-  widows: 40%;
+  width: 40%;
+  overflow-y: scroll;
+  height: 25em;
 }
 
 .bottomRightBody {
@@ -256,6 +267,7 @@ a {
 
 .bottomRightBody > div > p {
   margin: 0;
+  padding: 4px;
 }
 
 .bottomLeft {
@@ -315,8 +327,13 @@ a {
 }
 
 .listGroupEditChildren {
-    max-height: 8em;
-    overflow-y: scroll;
+    /* max-height: 8em;
+    overflow-y: scroll; */
+}
+
+.rangeBtn {
+    font-size: 0.8em;
+    margin-left: 1em;
 }
 
 .incrementBtn {
@@ -452,7 +469,7 @@ option:hover {
 }
 
 .greenBtn .hoverColor {
-  background-color: var(--darkGreen);
+  background-color: #fff;
 }
 
 .redBtn {
@@ -460,7 +477,7 @@ option:hover {
 }
 
 .redBtn .hoverColor {
-  background-color: var(--darkRed);
+  background-color: #fff;
 }
 
 .blueBtn {
@@ -468,7 +485,7 @@ option:hover {
 }
 
 .blueBtn .hoverColor {
-  background-color: var(--darkBlue);
+  background-color: #fff;
 }
 
 /* RangeSlider */
@@ -485,13 +502,13 @@ option:hover {
 }
 
 .submitRangeBtn {
-  background-color: var(--darkBlue);
+  background-color: #fff;
   border-radius: 2px;
-  color: #fff;
+  color: var(--textColor);
   margin-bottom: 1em;
-  opacity: 0.8;
   padding: 0.4em;
   transition: opacity .2s;
+  cursor: pointer;
 }
 
 .submitRangeBtn p {
@@ -511,8 +528,7 @@ option:hover {
   width: 100%;
 }
 
-.slider:hover,
-.submitRangeBtn:hover {
+.slider:hover {
   opacity: 1;
 }
 
@@ -535,33 +551,47 @@ option:hover {
 
 /* searcg bar */
 .searchBar {
-    height: 2.1em;
-    width: 100%;
-    margin-bottom: 1em;
-}
+    /* opacity: 0.6; */
+    background-color: #fff;
+    border-radius: 1em;
+    height: 2.3em;
+    margin: 2.8em auto;
+    transition: all 0.5s;
+    width: 34em;
+    -webkit-box-shadow: 0px 10px 31px -8px rgba(170,170,170,1);
+    -moz-box-shadow: 0px 10px 31px -8px rgba(170,170,170,1);
+    box-shadow: 0px 10px 31px -8px rgba(170,170,170,1);
+  }
 
 .searchBar .searchBtn {
-  background-color: var(--darkBlue);
-  color: #fff;
-  height: 100%;
-  width: 6em;
-  opacity: 0.6;
-  transition: all 0.5s;
+    border-radius: 50%;
+    color: var(--textColor);
+    font-size: 0.8em;
+    height: 2em;
+    margin: 1em;
+    width: 2em;
 }
 
-.searchBar .searchBtn:hover {
+
+.searchBar:hover {
   opacity: 1;
 }
 
 .searchBar input {
+  background-color: transparent;
+  border: none;
   color: var(--textColor);
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: 1.6em;
-  font-weight: 100;
+  font-size: 1em;
   height: 100%;
-  padding-left: 1rem;
+  margin-right: 1em;
+  outline: none;
+  padding-left: 1.4rem;
   width: 100%;
-  border: 1px solid var(--blue);
+}
+
+.searchBar input::placeholder {
+  color: var(--textColor);
 }
 
 .searchProfile {
@@ -569,8 +599,14 @@ option:hover {
   overflow-y: scroll;
 }
 
+.searchProfile .top {
+  transition: all 0.5s;
+}
+
 .searchProfile .top:hover {
-  background-color: var(--border);
+  /* -webkit-box-shadow: 0px 10px 31px 0px rgba(170,170,170,1);
+  -moz-box-shadow: 0px 10px 31px 0px rgba(170,170,170,1);
+  box-shadow: 0px 10px 31px 0px rgba(170,170,170,1); */
 }
 
 .doctorImage img {

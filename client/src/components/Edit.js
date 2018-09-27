@@ -27,17 +27,19 @@ class Edit extends Component {
         return (
         <Consumer>
             {value => {
-                const { profiles, dispatch, editName, profileEditId, linkInfo } = value;
-                const { name, details, img } =  profiles[profileEditId];
+                const { profiles, dispatch, profileEditId, linkInfo } = value;
+                const { details, img } =  profiles[profileEditId];
                 const detailsObjKeys = Object.keys(details);
                 return (
                     <div className="flexCol">
-                        <NavBtn
-                            link={linkInfo.profile.url}
-                            text={linkInfo.profile.text} />
-                        <NavBtn
-                            link={linkInfo.save.url}
-                            text={linkInfo.save.text} />
+                        <div className="navholder flexRow">
+                            <NavBtn
+                                link={linkInfo.save.url}
+                                text={linkInfo.save.text} />
+                            <NavBtn
+                                link={linkInfo.profile.url}
+                                text={linkInfo.profile.text} />
+                        </div>
                         <div className="top flexRow">
                             <div  className="doctorImage">
                                 <img src={img} alt="" />
@@ -46,32 +48,43 @@ class Edit extends Component {
                                 <div className="topRightEditLiner">
 
                                     <div className="listGroupEdit">
-                                    {(editName) ? (<div className="editSection flexRow">
-                                            <BtnEditField
-                                                profileEditId={profileEditId}
-                                                id='nameField'
-                                                fieldName='name'
-                                                actionType={EDIT_NAME}
-                                                dispatch={dispatch}
-                                                fieldName='name'
-                                                icon='fas fa-plus'
-                                                btnColor='blue'
-                                                isInput={true}
-                                                placeHolder={name} />
-                                        </div>) : (<BtnEditField
-                                                            profileEditId={profileEditId}
-                                                            actionType={TOGGLE_NAME_EDITOR}
-                                                            dispatch={dispatch}
-                                                            icon='fas fa-pencil-alt'
-                                                            btnColor='blue'
-                                                            item={name} />)
-                                    }
+                                    {detailsObjKeys.map((fieldName, index) => {
+                                        const { value, isTextEdit, edit} = details[fieldName];
+                                        if(isTextEdit){
+                                            return (
+                                                (edit) ? (<div className="editSection flexRow">
+                                                    <BtnEditField
+                                                        key={index}
+                                                        data={index}
+                                                        profileEditId={profileEditId}
+                                                        id='nameField'
+                                                        fieldName='name'
+                                                        actionType={EDIT_NAME}
+                                                        dispatch={dispatch}
+                                                        fieldName='name'
+                                                        icon='fas fa-plus'
+                                                        btnColor='blue'
+                                                        isInput={true}
+                                                        placeHolder={value}
+                                                        fieldName={fieldName} />
+                                                </div>) : (<BtnEditField
+                                                                    key={index}
+                                                                    profileEditId={profileEditId}
+                                                                    actionType={TOGGLE_NAME_EDITOR}
+                                                                    dispatch={dispatch}
+                                                                    icon='fas fa-pencil-alt'
+                                                                    btnColor='blue'
+                                                                    item={value}
+                                                                    fieldName={fieldName} />)
+                                            )
+                                        }
+                                    })}
                                     
                                 </div>
 
                                 {detailsObjKeys.map((fieldName, index) => {
-                                    const { isList, hasSlider, name, options, value, sliderValues, showSlider } = details[fieldName];
-                                    if(isList === false){
+                                    const { isList, hasSlider, name, options, value, sliderValues, showSlider, isTextEdit } = details[fieldName];
+                                    if(isList === false && !isTextEdit){
                                         return (
                                         <div key={index} className="listGroupEdit">
                                             { (hasSlider === true && showSlider) ? <RangeSlider
@@ -84,10 +97,11 @@ class Edit extends Component {
                                                     hasSlider ? (
                                                         <div className="pointer" >
                                                             <p
+                                                                className="noMargins"
                                                                 onClick={ hasSlider ? () => {
                                                                     dispatch({ type: TOGGLE_SLIDER, payload: { field: fieldName, index: profileEditId } })
                                                                 } : null }
-                                                            >{value} <i className="fas fa-angle-down"></i></p>
+                                                            >{value} <i className="fas fa-exchange-alt rangeBtn"></i></p>
                                                         </div>
                                                     ) : (
                                                         <select

@@ -22,12 +22,12 @@ class App extends Component {
                 ></Route>
                 <Route
                   exact
-                  path='/profile/:index'
+                  path='/profile'
                   component={Profile}
                 ></Route>
                 <Route
                   exact
-                  path='/edit/:index'
+                  path='/edit'
                   component={Edit}
                 ></Route>
               </Switch>
