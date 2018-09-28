@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import {
     EDIT_NAME,
@@ -8,7 +8,8 @@ import {
     TOGGLE_NAME_EDITOR,
     SET_RANGE,
     TOGGLE_SLIDER,
-    DOCTOR_SELECTED
+    DOCTOR_SELECTED,
+    SEARCHED_PROFILES
 } from './actions.js';
 
 const Context = React.createContext();
@@ -17,7 +18,10 @@ const reducer = (state, action) => {
     switch (action.type) {
         case EDIT_NAME:
             const newProfiles = [...state.profiles];
-            newProfiles[state.profileEditId].details[action.payload.fieldName].value = action.payload.value.trim();
+            newProfiles[state.profileEditId].details[action.payload.fieldName].value = action
+                .payload
+                .value
+                .trim();
             return {
                 ...state,
                 editName: !state.editName,
@@ -28,9 +32,7 @@ const reducer = (state, action) => {
             newProfiles6[state.profileEditId].details[action.payload].edit = !newProfiles6[state.profileEditId].details[action.payload].edit;
             return {
                 ...state,
-                profiles: [
-                    ...newProfiles6
-                ]
+                profiles: [...newProfiles6]
             }
         case EDIT_DROPDOWN:
             const newProfiles1 = [...state.profiles];
@@ -38,20 +40,25 @@ const reducer = (state, action) => {
             newProfiles1[state.profileEditId].details[keys[0]].value = action.payload[keys[0]];
             return {
                 ...state,
-                profiles: [
-                    ...newProfiles1
-                ]
+                profiles: [...newProfiles1]
             }
         case ADD_DETAILS_ENTRY:
             const newProfiles2 = [...state.profiles];
-            newProfiles2[state.profileEditId].details[action.payload.ref].value.unshift(action.payload.value.trim());
+            newProfiles2[state.profileEditId]
+                .details[action.payload.ref]
+                .value
+                .unshift(action.payload.value.trim());
             return {
                 ...state,
                 profiles: newProfiles2
             }
         case REMOVE_DETAILS_ENTRY:
             const newProfiles3 = [...state.profiles];
-            newProfiles3[state.profileEditId].details[action.payload.ref].value = state.profiles[action.payload.id].details[action.payload.ref].value.filter(data => data !== action.payload.item);
+            newProfiles3[state.profileEditId].details[action.payload.ref].value = state
+                .profiles[action.payload.id]
+                .details[action.payload.ref]
+                .value
+                .filter(data => data !== action.payload.item);
             return {
                 ...state,
                 profiles: newProfiles3
@@ -60,7 +67,7 @@ const reducer = (state, action) => {
             const newProfiles4 = [...state.profiles]
             newProfiles4[state.profileEditId].details[action.payload.field].sliderValues.low = action.payload.low;
             newProfiles4[state.profileEditId].details[action.payload.field].sliderValues.high = action.payload.high;
-            newProfiles4[state.profileEditId].details[action.payload.field].value = `${action.payload.low} - ${action.payload.high}`;
+            newProfiles4[state.profileEditId].details[action.payload.field].value = (action.payload.low === action.payload.high) ? action.payload.low : `${action.payload.low} - ${action.payload.high}`;
             return {
                 ...state,
                 profiles: newProfiles4
@@ -78,6 +85,11 @@ const reducer = (state, action) => {
                 ...state,
                 profileEditId: action.payload
             }
+        case SEARCHED_PROFILES:
+            return {
+                ...state,
+                matchedProfilesData: action.payload
+            }
         default:
             return state
     }
@@ -90,16 +102,38 @@ export class Provider extends Component {
         inputRefs: {},
         profileEditId: 0,
         linkInfo: {
-            save:   { url: "/profile", text: "Save" },
-            profile: { url: "/profile", text: "Back To Profile" },
-            edit:    { url: "/edit", text: "Edit Profile" },
-            search:{ url: "/", text: "Back To Search" }
+            save: {
+                url: "/profile",
+                text: "Save"
+            },
+            profile: {
+                url: "/profile",
+                text: "Back To Profile"
+            },
+            edit: {
+                url: "/edit",
+                text: "Edit Profile"
+            },
+            search: {
+                url: "/",
+                text: "Back To Search"
+            }
         },
         profiles: [
             {
                 id: 0,
                 img: "./img/doctor1.png",
-                excludedInRightSideColumn: ["expertise","surgicalLocations", "officeLocations", "name", "suffix", "apmAbbrev", "isPartner", "dob", "age"],
+                excludedInRightSideColumn: [
+                    "expertise",
+                    "surgicalLocations",
+                    "officeLocations",
+                    "name",
+                    "suffix",
+                    "apmAbbrev",
+                    "partnerStatus",
+                    "dob",
+                    "age"
+                ],
                 details: {
                     name: {
                         name: "name",
@@ -128,7 +162,9 @@ export class Provider extends Component {
                     partnerStatus: {
                         name: "Partner Status",
                         value: "Partner",
-                        options: [ "Partner", "Associate" ],
+                        options: [
+                            "Partner", "Associate"
+                        ],
                         isList: false,
                         hasSlider: false
                     },
@@ -161,55 +197,100 @@ export class Provider extends Component {
                     },
                     expertise: {
                         name: 'Expertise',
-                        value: [ "AC Joint Seperation", "Achilles Tendon Rupture", "ACL", "Athletic Injuries", "Distal Bicep Tendon Tear/Rupture", "Distal Tricep Tear", "Elbow Epicondylitis", "Elbow Lateral Ligament Tear", "Exertional Compartment Syndrome", "Hamstring Tear/Rupture", "Loose Bodies", "Loose Bodies in Elbow", "Medial Meniscus Tear", "Patellar Fracture", "Pectoralis Major Rupture", "Quad Tear/Rupture", "Rotator Cuff Repair", "Shoulder Dislocation", "Shoulder Fracture", "Shoulder Impingement", "Shoulder Labrum Tear", "Tommy John Surgery", "Total Shoulder Replacement" ],
+                        value: [
+                            "AC Joint Seperation",
+                            "Achilles Tendon Rupture",
+                            "ACL",
+                            "Athletic Injuries",
+                            "Distal Bicep Tendon Tear/Rupture",
+                            "Distal Tricep Tear",
+                            "Elbow Epicondylitis",
+                            "Elbow Lateral Ligament Tear",
+                            "Exertional Compartment Syndrome",
+                            "Hamstring Tear/Rupture",
+                            "Loose Bodies",
+                            "Loose Bodies in Elbow",
+                            "Medial Meniscus Tear",
+                            "Patellar Fracture",
+                            "Pectoralis Major Rupture",
+                            "Quad Tear/Rupture",
+                            "Rotator Cuff Repair",
+                            "Shoulder Dislocation",
+                            "Shoulder Fracture",
+                            "Shoulder Impingement",
+                            "Shoulder Labrum Tear",
+                            "Tommy John Surgery",
+                            "Total Shoulder Replacement"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     patientExceptions: {
                         name: 'Patient Exceptions',
-                        value: [ "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements" ],
+                        value: [
+                            "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     officeLocations: {
                         name: 'Office Locations',
-                        value: [ "Center City", "Bryn Mawr" ],
+                        value: [
+                            "Center City", "Bryn Mawr"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     surgicalLocations: {
                         name: 'Surgical Locations',
-                        value: [ "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center" ],
+                        value: [
+                            "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     workComp: {
                         name: 'Work Comp',
                         value: "Yes",
-                        options: ["Yes", "No"],
+                        options: [
+                            "Yes", "No"
+                        ],
                         isList: false,
                         hasSlider: false
                     },
                     auto: {
                         name: 'Auto',
                         value: "Yes",
-                        options: ["Yes", "No"],
+                        options: [
+                            "Yes", "No"
+                        ],
                         isList: false,
                         hasSlider: false
                     },
                     acuteInjuries: {
                         name: 'Acute Injuries',
                         value: "Yes",
-                        options: ["Yes", "No"],
+                        options: [
+                            "Yes", "No"
+                        ],
                         isList: false,
                         hasSlider: false
                     }
                 }
-            },
-            {
+            }, {
                 id: 1,
                 img: "./img/doctor2.png",
-                excludedInRightSideColumn: ["expertise","surgicalLocations", "officeLocations", "name", "suffix", "apmAbbrev", "isPartner", "dob", "age"],
+                excludedInRightSideColumn: [
+                    "expertise",
+                    "surgicalLocations",
+                    "officeLocations",
+                    "name",
+                    "suffix",
+                    "apmAbbrev",
+                    "isPartner",
+                    "dob",
+                    "age"
+                ],
                 details: {
                     name: {
                         name: "name",
@@ -235,7 +316,9 @@ export class Provider extends Component {
                     partnerStatus: {
                         name: "Partner Status",
                         value: "Partner",
-                        options: [ "Partner", "Associate" ],
+                        options: [
+                            "Partner", "Associate"
+                        ],
                         isList: false,
                         hasSlider: false
                     },
@@ -266,55 +349,100 @@ export class Provider extends Component {
                     },
                     expertise: {
                         name: 'Expertise',
-                        value: [ "AC Joint Seperation", "Achilles Tendon Rupture", "ACL", "Athletic Injuries", "Distal Bicep Tendon Tear/Rupture", "Distal Tricep Tear", "Elbow Epicondylitis", "Elbow Lateral Ligament Tear", "Exertional Compartment Syndrome", "Hamstring Tear/Rupture", "Loose Bodies", "Loose Bodies in Elbow", "Medial Meniscus Tear", "Patellar Fracture", "Pectoralis Major Rupture", "Quad Tear/Rupture", "Rotator Cuff Repair", "Shoulder Dislocation", "Shoulder Fracture", "Shoulder Impingement", "Shoulder Labrum Tear", "Tommy John Surgery", "Total Shoulder Replacement" ],
+                        value: [
+                            "AC Joint Seperation",
+                            "Achilles Tendon Rupture",
+                            "ACL",
+                            "Athletic Injuries",
+                            "Distal Bicep Tendon Tear/Rupture",
+                            "Distal Tricep Tear",
+                            "Elbow Epicondylitis",
+                            "Elbow Lateral Ligament Tear",
+                            "Exertional Compartment Syndrome",
+                            "Hamstring Tear/Rupture",
+                            "Loose Bodies",
+                            "Loose Bodies in Elbow",
+                            "Medial Meniscus Tear",
+                            "Patellar Fracture",
+                            "Pectoralis Major Rupture",
+                            "Quad Tear/Rupture",
+                            "Rotator Cuff Repair",
+                            "Shoulder Dislocation",
+                            "Shoulder Fracture",
+                            "Shoulder Impingement",
+                            "Shoulder Labrum Tear",
+                            "Tommy John Surgery",
+                            "Total Shoulder Replacement"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     patientExceptions: {
                         name: 'Patient Exceptions',
-                        value: [ "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements" ],
+                        value: [
+                            "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     officeLocations: {
                         name: 'Office Locations',
-                        value: [ "Center City", "Bryn Mawr" ],
+                        value: [
+                            "Center City", "Bryn Mawr"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     surgicalLocations: {
                         name: 'Surgical Locations',
-                        value: [ "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center" ],
+                        value: [
+                            "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     workComp: {
                         name: 'Work Comp',
                         value: "Yes",
-                        options: ["Yes", "No"],
+                        options: [
+                            "Yes", "No"
+                        ],
                         isList: false,
                         hasSlider: false
                     },
                     auto: {
                         name: 'Auto',
                         value: "Yes",
-                        options: ["Yes", "No"],
+                        options: [
+                            "Yes", "No"
+                        ],
                         isList: false,
                         hasSlider: false
                     },
                     acuteInjuries: {
                         name: 'Acute Injuries',
                         value: "Yes",
-                        options: ["Yes", "No"],
+                        options: [
+                            "Yes", "No"
+                        ],
                         isList: false,
                         hasSlider: false
                     }
                 }
-            },
-            {
+            }, {
                 id: 2,
                 img: "./img/doctor3.png",
-                excludedInRightSideColumn: ["expertise","surgicalLocations", "officeLocations", "name", "suffix", "apmAbbrev", "isPartner", "dob", "age"],
+                excludedInRightSideColumn: [
+                    "expertise",
+                    "surgicalLocations",
+                    "officeLocations",
+                    "name",
+                    "suffix",
+                    "apmAbbrev",
+                    "isPartner",
+                    "dob",
+                    "age"
+                ],
                 details: {
                     name: {
                         name: "name",
@@ -340,7 +468,9 @@ export class Provider extends Component {
                     partnerStatus: {
                         name: "Partner Status",
                         value: "Partner",
-                        options: [ "Partner", "Associate" ],
+                        options: [
+                            "Partner", "Associate"
+                        ],
                         isList: false,
                         hasSlider: false
                     },
@@ -371,55 +501,100 @@ export class Provider extends Component {
                     },
                     expertise: {
                         name: 'Expertise',
-                        value: [ "AC Joint Seperation", "Achilles Tendon Rupture", "ACL", "Athletic Injuries", "Distal Bicep Tendon Tear/Rupture", "Distal Tricep Tear", "Elbow Epicondylitis", "Elbow Lateral Ligament Tear", "Exertional Compartment Syndrome", "Hamstring Tear/Rupture", "Loose Bodies", "Loose Bodies in Elbow", "Medial Meniscus Tear", "Patellar Fracture", "Pectoralis Major Rupture", "Quad Tear/Rupture", "Rotator Cuff Repair", "Shoulder Dislocation", "Shoulder Fracture", "Shoulder Impingement", "Shoulder Labrum Tear", "Tommy John Surgery", "Total Shoulder Replacement" ],
+                        value: [
+                            "AC Joint Seperation",
+                            "Achilles Tendon Rupture",
+                            "ACL",
+                            "Athletic Injuries",
+                            "Distal Bicep Tendon Tear/Rupture",
+                            "Distal Tricep Tear",
+                            "Elbow Epicondylitis",
+                            "Elbow Lateral Ligament Tear",
+                            "Exertional Compartment Syndrome",
+                            "Hamstring Tear/Rupture",
+                            "Loose Bodies",
+                            "Loose Bodies in Elbow",
+                            "Medial Meniscus Tear",
+                            "Patellar Fracture",
+                            "Pectoralis Major Rupture",
+                            "Quad Tear/Rupture",
+                            "Rotator Cuff Repair",
+                            "Shoulder Dislocation",
+                            "Shoulder Fracture",
+                            "Shoulder Impingement",
+                            "Shoulder Labrum Tear",
+                            "Tommy John Surgery",
+                            "Total Shoulder Replacement"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     patientExceptions: {
                         name: 'Patient Exceptions',
-                        value: [ "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements" ],
+                        value: [
+                            "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     officeLocations: {
                         name: 'Office Locations',
-                        value: [ "Center City", "Bryn Mawr" ],
+                        value: [
+                            "Center City", "Bryn Mawr"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     surgicalLocations: {
                         name: 'Surgical Locations',
-                        value: [ "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center" ],
+                        value: [
+                            "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     workComp: {
                         name: 'Work Comp',
                         value: "Yes",
-                        options: ["Yes", "No"],
+                        options: [
+                            "Yes", "No"
+                        ],
                         isList: false,
                         hasSlider: false
                     },
                     auto: {
                         name: 'Auto',
                         value: "Yes",
-                        options: ["Yes", "No"],
+                        options: [
+                            "Yes", "No"
+                        ],
                         isList: false,
                         hasSlider: false
                     },
                     acuteInjuries: {
                         name: 'Acute Injuries',
                         value: "Yes",
-                        options: ["Yes", "No"],
+                        options: [
+                            "Yes", "No"
+                        ],
                         isList: false,
                         hasSlider: false
                     }
                 }
-            },
-            {
+            }, {
                 id: 3,
                 img: "./img/doctor4.png",
-                excludedInRightSideColumn: ["expertise","surgicalLocations", "officeLocations", "name", "suffix", "apmAbbrev", "isPartner", "dob", "age"],
+                excludedInRightSideColumn: [
+                    "expertise",
+                    "surgicalLocations",
+                    "officeLocations",
+                    "name",
+                    "suffix",
+                    "apmAbbrev",
+                    "isPartner",
+                    "dob",
+                    "age"
+                ],
                 details: {
                     name: {
                         name: "name",
@@ -445,7 +620,9 @@ export class Provider extends Component {
                     partnerStatus: {
                         name: "Partner Status",
                         value: "Partner",
-                        options: [ "Partner", "Associate" ],
+                        options: [
+                            "Partner", "Associate"
+                        ],
                         isList: false,
                         hasSlider: false
                     },
@@ -476,46 +653,82 @@ export class Provider extends Component {
                     },
                     expertise: {
                         name: 'Expertise',
-                        value: [ "AC Joint Seperation", "Achilles Tendon Rupture", "ACL", "Athletic Injuries", "Distal Bicep Tendon Tear/Rupture", "Distal Tricep Tear", "Elbow Epicondylitis", "Elbow Lateral Ligament Tear", "Exertional Compartment Syndrome", "Hamstring Tear/Rupture", "Loose Bodies", "Loose Bodies in Elbow", "Medial Meniscus Tear", "Patellar Fracture", "Pectoralis Major Rupture", "Quad Tear/Rupture", "Rotator Cuff Repair", "Shoulder Dislocation", "Shoulder Fracture", "Shoulder Impingement", "Shoulder Labrum Tear", "Tommy John Surgery", "Total Shoulder Replacement" ],
+                        value: [
+                            "AC Joint Seperation",
+                            "Achilles Tendon Rupture",
+                            "ACL",
+                            "Athletic Injuries",
+                            "Distal Bicep Tendon Tear/Rupture",
+                            "Distal Tricep Tear",
+                            "Elbow Epicondylitis",
+                            "Elbow Lateral Ligament Tear",
+                            "Exertional Compartment Syndrome",
+                            "Hamstring Tear/Rupture",
+                            "Loose Bodies",
+                            "Loose Bodies in Elbow",
+                            "Medial Meniscus Tear",
+                            "Patellar Fracture",
+                            "Pectoralis Major Rupture",
+                            "Quad Tear/Rupture",
+                            "Rotator Cuff Repair",
+                            "Shoulder Dislocation",
+                            "Shoulder Fracture",
+                            "Shoulder Impingement",
+                            "Shoulder Labrum Tear",
+                            "Tommy John Surgery",
+                            "Total Shoulder Replacement"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     patientExceptions: {
                         name: 'Patient Exceptions',
-                        value: [ "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements" ],
+                        value: [
+                            "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     officeLocations: {
                         name: 'Office Locations',
-                        value: [ "Center City", "Bryn Mawr" ],
+                        value: [
+                            "Center City", "Bryn Mawr"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     surgicalLocations: {
                         name: 'Surgical Locations',
-                        value: [ "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center" ],
+                        value: [
+                            "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center"
+                        ],
                         isList: true,
                         hasSlider: false
                     },
                     workComp: {
                         name: 'Work Comp',
                         value: "Yes",
-                        options: ["Yes", "No"],
+                        options: [
+                            "Yes", "No"
+                        ],
                         isList: false,
                         hasSlider: false
                     },
                     auto: {
                         name: 'Auto',
                         value: "Yes",
-                        options: ["Yes", "No"],
+                        options: [
+                            "Yes", "No"
+                        ],
                         isList: false,
                         hasSlider: false
                     },
                     acuteInjuries: {
                         name: 'Acute Injuries',
                         value: "Yes",
-                        options: ["Yes", "No"],
+                        options: [
+                            "Yes", "No"
+                        ],
                         isList: false,
                         hasSlider: false
                     }
@@ -525,7 +738,7 @@ export class Provider extends Component {
         dispatch: (action) => this.setState(state => reducer(state, action))
     }
 
-    render(){
+    render() {
         return (
             <Context.Provider value={this.state}>
                 {this.props.children}
