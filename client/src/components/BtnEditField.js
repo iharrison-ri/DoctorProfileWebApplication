@@ -18,7 +18,7 @@ class BtnEditField extends Component {
                 {/* this is the icon that displays */}
                 <div
                     onClick={update.bind(this, this.props)}
-                    className={btnClass(btnColor) + " btn flexRow"}>
+                    className={btnClass(btnColor) + " btn flexRow shadowSmall activeBtn"}>
                     <div className="hoverColor fullSize"></div>
                     <p>
                         <i className={icon}></i>

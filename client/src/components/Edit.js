@@ -5,6 +5,8 @@ import NavBtn from './NavBtn';
 import BtnEditField from './BtnEditField';
 import RangeSlider from './RangeSlider';
 import ProfileImg from './ProfileImg';
+import AddNewFieldBtn from './AddNewFieldBtn';
+import AddField from './AddField';
 
 import {update} from '../util/methods.js';
 
@@ -40,7 +42,10 @@ class Edit extends Component {
 
                             <div className="top flexRow">
 
-                                <ProfileImg img={img}/>
+                                <div className="flexCol">
+                                    <ProfileImg img={img}/>
+                                    <AddNewFieldBtn />
+                                </div>
 
                                 <div className="topRightEdit flexCol">
                                     <div className="topRightEditLiner">
@@ -194,7 +199,9 @@ class Edit extends Component {
                                         </div>
 
                                     </div>
+                                    <AddField />
                                 </div>
+                            
                             </div>
 
                         </div>

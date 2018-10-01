@@ -68,8 +68,7 @@ a {
     text-decoration: none;
 }
 
-.listGroup {
-    }
+.listGroup {}
 
 .listHeading {
     color: var(--head);
@@ -92,24 +91,43 @@ a {
 }
 
 /* width */
-::-webkit-scrollbar {
+*::-webkit-scrollbar {
     width: 4px;
 }
 
 /* Track */
-::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
     background: var(--border);
     background: var(--offWhite);
 }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
     background: var(--head);
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
+*::-webkit-scrollbar-thumb:hover {
     background: var(--head);
+}
+
+.shadow {
+    -webkit-box-shadow: 0 8px 31px -8px rgba(170,170,170,1);
+    -moz-box-shadow: 0 8px 31px -8px rgba(170,170,170,1);
+    box-shadow: 0 8px 31px -8px rgba(170,170,170,1);
+}
+
+.shadowSmall {
+    -webkit-box-shadow: 0 0 27px -5px rgba(136,136,136,1);
+    -moz-box-shadow: 0 0 27px -5px rgba(136,136,136,1);
+    box-shadow: 0 0 27px -5px rgba(136,136,136,1);
+}
+.activeBtn:active {
+    background-color: var(--textColor);
+    opacity: 0.08;
+}
+.activeBtn:active > * {
+    color: #fff !important;
 }
 
 /* container */
@@ -123,8 +141,7 @@ a {
 }
 
 /* nav bar */
-.navBar {
-    }
+.navBar {}
 
 /* top */
 .top {
@@ -284,6 +301,10 @@ a {
     height: 34em;
 }
 
+.topRightEdit.showAdd {
+    overflow: hidden;
+}
+
 .topRightEditLiner {
     position: absolute;
     top: 0;
@@ -293,6 +314,50 @@ a {
     justify-content: flex-start;
     padding: 0 3rem;
     width: 100%;
+}
+
+.addField {
+    height: 34em;
+    overflow-y: scroll;
+    position: absolute;
+    width: 34rem;
+    background-color: #fff;
+    z-index: -10;
+    right: 0;
+    opacity: 0;
+    top: 0;
+}
+
+.addField.showAdd {
+    z-index: 10;
+    opacity: 1;
+}
+
+.addField > p {
+    font-size: 3em;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.addField img {
+    position: relative;
+    top: 2em;
+}
+
+.ChoiceBtnHolder {
+    flex-wrap: wrap;
+}
+
+.fieldChoiceBtn {
+    padding: 0 1rem;
+    border-radius: 8px;
+    margin: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.fieldChoiceBtn p {
+    font-size: 1.4rem;
 }
 
 .listGroupEdit {
@@ -357,8 +422,6 @@ a {
 
 .editInput {
     background-color: transparent;
-    border-bottom-width: 2px;
-    border-width: 0;
     border: 1px solid #5f81a2;
     color: #5f81a2;
     font-family: 'Roboto Condensed', sans-serif;
@@ -366,6 +429,10 @@ a {
     font-weight: 100;
     padding: 4px;
     width: 10em;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-left-width: 0;
+    outline: 0;
 }
 
 .editInput::placeholder {
@@ -453,33 +520,36 @@ option:hover {
 }
 
 .greenBtn {
-    background-color: var(--green);
+    /* background-color: var(--green); */
 }
 
 .greenBtn .hoverColor {
-    background-color: #fff;
+    /* background-color: #fff; */
+    background-color: var(--green);
 }
 
 .redBtn {
-    background-color: var(--red);
+    /* background-color: var(--red); */
 }
 
 .redBtn .hoverColor {
-    background-color: #fff;
+    /* background-color: #fff; */
+    background-color: var(--darkRed);
 }
 
 .blueBtn {
-    background-color: var(--blue);
+    /* background-color: var(--blue); */
 }
 
 .blueBtn .hoverColor {
-    background-color: #fff;
+    /* background-color: #fff; */
+    background-color: var(--darkBlue);
 }
 
 /* RangeSlider */
 .slidecontainer {
     background-color: #fff;
-    border: 1px solid var(--blue);
+    /* border: 1px solid var(--blue); */
     font-size: 1rem;
     padding: 10px;
     position: absolute;
@@ -495,8 +565,13 @@ option:hover {
     color: var(--textColor);
     margin-bottom: 1em;
     padding: 0.4em;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
     cursor: pointer;
+}
+.submitRangeBtn:hover {
+    /* background-color: var(--textColor);
+    color: #fff;
+    opacity: 0.6; */
 }
 
 .submitRangeBtn p {
@@ -598,4 +673,20 @@ option:hover {
 }
 .searchProfile .top:hover > .doctorImage img {
     transform: scale(1.1);
+}
+
+/* addNewFieldBtn */
+.addNewFieldBtn {
+    border-radius: 50%;
+    color: var(--textColor);
+    cursor: pointer;
+    height: 8em;
+    margin-top: 2em;
+    width: 8em;
+    user-select: none;
+}
+
+.addNewFieldBtn p {
+    font-size: 2em;
+    margin: 0;
 }
