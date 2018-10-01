@@ -76,7 +76,7 @@ class RangeSlider extends Component {
                         })
                     }
                     return (
-                        <div className="slidecontainer">
+                        <div className="slidecontainer shadow">
                             <div className='submitRangeBtn' onClick={setRange}>
                                 <p>ok</p>
                             </div>
