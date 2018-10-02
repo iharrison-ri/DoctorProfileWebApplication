@@ -68,6 +68,10 @@ a {
     text-decoration: none;
 }
 
+select {
+    cursor: pointer;
+}
+
 .listGroup {}
 
 .listHeading {
@@ -216,7 +220,7 @@ a {
     flex-grow: 1;
 }
 
-.topRightTop > div > p {
+.topRightTop p {
     margin: 0;
 }
 
@@ -339,13 +343,20 @@ a {
     opacity: 0.8;
 }
 
-.addField img {
+.ChoiceBtnHolder {
+    flex-wrap: wrap;
+}
+
+.exampleBox {
     position: relative;
     top: 2em;
 }
 
-.ChoiceBtnHolder {
-    flex-wrap: wrap;
+.example {
+    margin: 0;
+    font-size: 3em;
+    font-weight: 600;
+    opacity: 0.8;
 }
 
 .fieldChoiceBtn {
@@ -554,9 +565,13 @@ option:hover {
     padding: 10px;
     position: absolute;
     right: 0;
-    top: 0;
+    top: 100%;
     width: 10rem;
     z-index: 200;
+}
+
+.rangeSlider {
+    cursor: pointer;
 }
 
 .submitRangeBtn {
@@ -587,11 +602,7 @@ option:hover {
     margin: 1em 0;
     opacity: 0.7;
     outline: none;
-    transition: opacity 0.2s;
     width: 100%;
-}
-.slider:hover {
-    opacity: 1;
 }
 
 .slider::-webkit-slider-thumb {
@@ -613,12 +624,10 @@ option:hover {
 
 /* searcg bar */
 .searchBar {
-    /* opacity: 0.6; */
     background-color: #fff;
     border-radius: 1em;
     height: 2.3em;
     margin: 2.8em auto;
-    transition: all 0.5s;
     width: 34em;
     -webkit-box-shadow: 0 10px 31px -8px rgba(170,170,170,1);
     -moz-box-shadow: 0 10px 31px -8px rgba(170,170,170,1);
@@ -632,9 +641,6 @@ option:hover {
     height: 2em;
     margin: 1em;
     width: 2em;
-}
-.searchBar:hover {
-    opacity: 1;
 }
 
 .searchBar input {
@@ -661,11 +667,6 @@ option:hover {
 
 .searchProfile .top {
     transition: all 0.5s;
-}
-.searchProfile .top:hover {
-    /* -webkit-box-shadow: 0px 10px 31px 0px rgba(170,170,170,1);
-  -moz-box-shadow: 0px 10px 31px 0px rgba(170,170,170,1);
-  box-shadow: 0px 10px 31px 0px rgba(170,170,170,1); */
 }
 
 .doctorImage img {

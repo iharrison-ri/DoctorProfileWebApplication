@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {update, btnClass} from '../util/methods.js';
+import React, {Component} from "react";
+import {update, btnClass} from "../util/methods.js";
 
 class BtnEditField extends Component {
     render() {
@@ -9,13 +9,23 @@ class BtnEditField extends Component {
             icon,
             item,
             name,
-            isInput,
             placeHolder,
             data
         } = this.props;
+
+        const field = (item)
+        ? <span>{item}</span>
+        : <input
+            id={"input:" + data}
+            name={name}
+            className="editInput"
+            type="text"
+            defaultValue={placeHolder
+            ? placeHolder
+            : "new entry"}/>
+
         return (
             <div className='btnBox flexRow'>
-                {/* this is the icon that displays */}
                 <div
                     onClick={update.bind(this, this.props)}
                     className={btnClass(btnColor) + " btn flexRow shadowSmall activeBtn"}>
@@ -24,23 +34,9 @@ class BtnEditField extends Component {
                         <i className={icon}></i>
                     </p>
                 </div>
-                {/* display if there is an edit item next to a pencil icon */}
-                {(item)
-                    ? (
-                        <span>{item}</span>
-                    )
-                    : null}
-                {/* display if there is an edit item next to a plus icon */}
-                {(isInput)
-                    ? (<input
-                        id={"input:" + data}
-                        name={name}
-                        className="editInput"
-                        type="text"
-                        defaultValue={placeHolder
-                        ? placeHolder
-                        : "new entry"}/>)
-                    : null}
+
+                {field}
+
             </div>
         )
     }

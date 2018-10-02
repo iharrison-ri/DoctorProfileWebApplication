@@ -1,66 +1,44 @@
 import React, {Component} from 'react';
 
-import {Consumer} from '../store';
-import {getColumns} from '../util/filter';
+import {Consumer} from "../store";
+import {getColumns} from "../util/filter";
+import Table from "./Table";
+import InfoLine from "./InfoLine";
+import List from "./List";
 
 class ProfileBottom extends Component {
     render() {
         return (
             <Consumer>
                 {value => {
-                    const { details, excludedInRightSideColumn} = this.props.profile || value.profiles[0];
-                    const detailsKeys = Object.keys(details);
 
+                    const {details, excludedInRightSideColumn} = this.props.profile;
+                    const detailsKeys = Object.keys(details);
                     const expertiseColumns = getColumns(details.expertise.value);
+                    const {leftColumns, rightColumns} = expertiseColumns;
+
                     return (
                         <div className="bottom flexRow">
+
                             <div className="bottomRight">
-                                <div className="listGroup">
-                                    <p className="listHeading">Expertise</p>
-                                    <div className="bottomRightBody flexRow">
-                                        <div className="expertiseLeft">
-                                            {expertiseColumns
-                                                .left
-                                                .map((data, index) => (index % 2 !== 0)
-                                                    ? <p key={index} className="even">{data}</p>
-                                                    : <p key={index}>{data}</p>)}
-                                        </div>
-                                        <div className="expertiseRight">
-                                            {expertiseColumns
-                                                .right
-                                                .map((data, index) => (index % 2 !== 0)
-                                                    ? <p key={index} className="even">{data}</p>
-                                                    : <p key={index}>{data}</p>)}
-                                        </div>
-                                    </div>
-                                </div>
+                                <Table
+                                    heading={"Expertise"}
+                                    leftColumns={leftColumns}
+                                    rightColumns={rightColumns}/>
                             </div>
+
                             <div className="bottomLeft">
                                 <div className="bottomLeftSection">
                                     {detailsKeys.map((data, index) => {
-                                        if (excludedInRightSideColumn.includes(data)) {
-                                            return null
-                                        }
-                                        if (typeof details[data].value === 'string') {
-                                            return (
-                                                <div key={index} className="oneLineInfo">
-                                                    <p className="listHeading">{details[data].name}</p>
-                                                    <p>{details[data].value}</p>
-                                                </div>
-                                            )
-                                        } else {
-                                            return (
-                                                <div key={index} className="listGroup">
-                                                    <p className="listHeading">{details[data].name}</p>
-                                                    {details[data]
-                                                        .value
-                                                        .map((data, index) => <p key={index}>{data}</p>)}
-                                                </div>
-                                            )
-                                        }
+                                        return (excludedInRightSideColumn.includes(data))
+                                            ? null
+                                            : (typeof details[data].value === 'string')
+                                                ? <InfoLine key={index} name={details[data].name} value={details[data].value}/>
+                                                : <List key={index} heading={details[data].name} list={details[data].value}/>
                                     })}
                                 </div>
                             </div>
+
                         </div>
                     )
                 }}

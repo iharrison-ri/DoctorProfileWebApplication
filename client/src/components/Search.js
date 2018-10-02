@@ -9,6 +9,17 @@ import ProfileTop from './ProfileTop';
 
 class Search extends Component {
     render() {
+        
+        //style to each doctor profile card that is only applied on the search screen
+        //this is passed down as props to the ProfileTop component
+        const style = {
+            margin: "0 auto",
+            width: "60em",
+            padding: "1em 0",
+            border: "none",
+            transform: "scale(0.9)"
+        }
+
         return (
             <Consumer>
                 {value => {
@@ -21,13 +32,7 @@ class Search extends Component {
 
                             <div className="searchProfile">
                                 {displayProfiles.map((profile, index) => {
-                                    const style = {
-                                        margin: "0 auto",
-                                        width: "60em",
-                                        padding: "1em 0",
-                                        border: "none",
-                                        transform: "scale(0.9)"
-                                    }
+                                    
                                     const action = {
                                         type: DOCTOR_SELECTED,
                                         payload: profile.id

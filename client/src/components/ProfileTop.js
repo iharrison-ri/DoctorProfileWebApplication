@@ -2,56 +2,57 @@ import React, {Component} from 'react';
 
 import {Consumer} from '../store';
 import ProfileImg from './ProfileImg';
+import List from './List';
 
 class ProfileTop extends Component {
     render() {
+
+        let {img, details} = this.props.profile;
+        const style = this.props.addStlye;
+        const imgLocation = process.env.PUBLIC_URL + img;
+        const name = details.name.value;
+        const suffix = details.suffix.value;
+        const apmAbbrev = details.apmAbbrev.value;
+        const partnerStatus = details.partnerStatus.value;
+        const dob = details.dob.value;
+        const age = details.age.value;
+        const officeLocations = details.officeLocations.value;
+        const surgicalLocations = details.surgicalLocations.value;
+
         return (
             <Consumer>
                 {value => {
-                    let {img, details} = this.props.profile || value.profiles[0];
-                    const style = (this.props.addStlye)
-                        ? this.props.addStlye
-                        : {};
                     return (
                         <div className="top flexRow" style={style}>
-                        
-                            <ProfileImg img={process.env.PUBLIC_URL + img} />
-                            
+
+                            <ProfileImg img={imgLocation}/>
+
                             <div className="topRight">
+
                                 <div className="doctorName flexRow">
-                                    <p>{details.name.value}, {details.suffix.value}</p>
+                                    <p>{name}, {suffix}</p>
                                 </div>
+
                                 <div className="topRightTop flexRow">
-                                    <div className="topRightTopOne flexCol">
-                                        <p>({details.apmAbbrev.value})</p>
-                                        <p>{details.partnerStatus.value}</p>
+                                    <div className="flexCol">
+                                        <p>({apmAbbrev})</p>
+                                        <p>{partnerStatus}</p>
                                     </div>
-                                    <div className="topRightTopTwo flexRow">
-                                        <p>Birthdate: {details.dob.value}</p>
+                                    <div className="flexRow">
+                                        <p>Birthdate: {dob}</p>
                                     </div>
-                                    <div className="topRightTopThree flexRow">
-                                        <p>Age: {details.age.value}</p>
+                                    <div className="flexRow">
+                                        <p>Age: {age}</p>
                                     </div>
                                 </div>
+
                                 <div className="topRightBottom flexRow">
-                                    <div className="specificLocation">
-                                        <div className="listGroup">
-                                            <p className="listHeading">Office Location</p>
-                                            {details
-                                                .officeLocations
-                                                .value
-                                                .map((location, index) => <p key={index}>{location}</p>)}
-                                        </div>
-                                    </div>
-                                    <div className="listGroup">
-                                        <p className="listHeading">Surgical Locations</p>
-                                        {details
-                                            .surgicalLocations
-                                            .value
-                                            .map((location, index) => <p key={index}>{location}</p>)}
-                                    </div>
+                                    <List heading={"Office Location"} list={officeLocations}/>
+                                    <List heading={"Surgical Locations"} list={surgicalLocations}/>
                                 </div>
+
                             </div>
+
                         </div>
                     )
                 }}

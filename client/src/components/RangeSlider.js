@@ -1,55 +1,49 @@
-import React, {Component} from 'react';
-import {Consumer} from '../store';
-import {SET_RANGE, TOGGLE_SLIDER} from '../store/actions';
+import React, {Component} from "react";
+import {Consumer} from "../store";
+import {SET_RANGE, TOGGLE_SLIDER} from "../store/actions";
 
 class RangeSlider extends Component {
     state = {
-
+        low: "",
+        high: ""
     }
 
-    valueSetInState = false;
-
     componentDidMount() {
-        this.setState({
-            low: this.props.sliderValues.low,
-            high: this.props.sliderValues.high
-        })
+        this.setState({low: this.props.sliderValues.low, high: this.props.sliderValues.high})
     }
 
     onChange = (e) => {
-        const lowerGreaterThanHigher = (parseInt(this.state.low) > parseInt(this.state.high));
-        const isMovingLower = (e.target.name === "low");
-        if(lowerGreaterThanHigher && isMovingLower){
-            this.setState({
-                high: e.target.value
-            })
-        } else if(lowerGreaterThanHigher && !isMovingLower) {
-            this.setState({
-                low: e.target.value
-            })
+
+        const theLowValue = e.target.parentElement.children[2].innerHTML;
+        const theHighValue = e.target.parentElement.children[5].innerHTML;
+
+        const value = e.target.value;
+        this.setState({
+            [e.target.name]: value
+        })
+
+        let low;
+        let high;
+        let lowerGreaterThanHigher;
+
+        if (e.target.name === "low") {
+            low = value;
+            high = theHighValue;
+            lowerGreaterThanHigher = (parseInt(value, 10) > parseInt(theHighValue, 10));
+        } else {
+            low = theLowValue;
+            high = value;
+            lowerGreaterThanHigher = (parseInt(theLowValue, 10) > parseInt(value, 10))
         }
 
-        this.setState({
-            [e.target.name]: e.target.value
-        })
-    }
+        const isMovingLowerSlider = (e.target.name === "low");
 
-    onTransitionEnd = (e) => {
-        const lowerGreaterThanHigher = (parseInt(this.state.low) > parseInt(this.state.high));
-        const isMovingLower = (e.target.name === "low");
-        if(lowerGreaterThanHigher && isMovingLower){
-            this.setState({
-                high: e.target.value
-            })
-        } else if(lowerGreaterThanHigher && !isMovingLower) {
-            this.setState({
-                low: e.target.value
-            })
+        if (lowerGreaterThanHigher && isMovingLowerSlider) {
+            this.setState({high: low})
+        } else if (lowerGreaterThanHigher && !isMovingLowerSlider) {
+            this.setState({low: high})
         }
 
-        this.setState({
-            [e.target.name]: e.target.value
-        })
     }
 
     render() {
@@ -77,11 +71,12 @@ class RangeSlider extends Component {
                     }
                     return (
                         <div className="slidecontainer shadow">
-                            <div className='submitRangeBtn' onClick={setRange}>
+                            <div className="submitRangeBtn" onClick={setRange}>
                                 <p>ok</p>
                             </div>
-                            <span>low: {this.state.low} </span>
-                            <span id="low"></span>
+                            <span>low:
+                            </span>
+                            <span id="lowValue">{this.state.low}</span>
                             <input
                                 name="low"
                                 type="range"
@@ -90,10 +85,10 @@ class RangeSlider extends Component {
                                 value={this.state.low}
                                 className="slider"
                                 id="myRange"
-                                onChange={this.onChange}
-                                onTransitionEnd={this.onTransitionEnd}/>
-                            <span>high: {this.state.high} </span>
-                            <span id="high"></span>
+                                onChange={this.onChange}/>
+                            <span>high:
+                            </span>
+                            <span id="highValue">{this.state.high}</span>
                             <input
                                 name="high"
                                 type="range"
@@ -102,8 +97,7 @@ class RangeSlider extends Component {
                                 value={this.state.high}
                                 className="slider"
                                 id="myRange2"
-                                onChange={this.onChange}
-                                onTransitionEnd={this.onTransitionEnd}/>
+                                onChange={this.onChange}/>
                         </div>
                     )
                 }}

@@ -80,26 +80,45 @@ export const update = (params, e) => {
 
 export const toggleAddField = () => {
     document.getElementsByClassName("topRightEdit ")[0].scrollTop = 0;
-    const isShowAddScreen = document.getElementsByClassName('topRightEdit')[0].classList.contains('showAdd');
-    if(isShowAddScreen){
-        document.getElementsByClassName('topRightEdit')[0].classList.remove("showAdd");
-        document.getElementsByClassName('addField')[0].classList.remove("showAdd");
+    const isShowAddScreen = document
+        .getElementsByClassName('topRightEdit')[0]
+        .classList
+        .contains('showAdd');
+    if (isShowAddScreen) {
+        document
+            .getElementsByClassName('topRightEdit')[0]
+            .classList
+            .remove("showAdd");
+        document
+            .getElementsByClassName('addField')[0]
+            .classList
+            .remove("showAdd");
     } else {
-        document.getElementsByClassName('topRightEdit')[0].classList.add("showAdd");
-        document.getElementsByClassName('addField')[0].classList.add("showAdd");
+        document
+            .getElementsByClassName('topRightEdit')[0]
+            .classList
+            .add("showAdd");
+        document
+            .getElementsByClassName('addField')[0]
+            .classList
+            .add("showAdd");
     }
 }
 
 export const getAddHoverImg = (index) => {
     let img;
     switch (index) {
-        case 1: img = "./img/dropdown.png";
+        case 1:
+            img = "./img/dropdown.png";
             break;
-        case 2: img = "./img/list.png";
+        case 2:
+            img = "./img/list.png";
             break;
-        case 3: img = "./img/range.png";
+        case 3:
+            img = "./img/range.png";
             break;
-        case 4: img = "./img/input.png";
+        case 4:
+            img = "./img/input.png";
             break;
         default:
             break;
@@ -123,4 +142,28 @@ export const btnClass = (color) => {
             return null
     }
     return btnClass;
+}
+
+export const isMatchingString = (comparer, word) => {
+    return comparer
+        .toUpperCase()
+        .includes(word.toUpperCase())
+}
+
+export const getSearchValues = (event) => {
+    const values = event.target.value
+    return values
+        .trim()
+        .split(" ")
+        .filter(data => data !== "")
+}
+
+export const isInArray = (comparer, word) => {
+    let returnValue = false;
+    comparer.forEach(data => {
+        if (data.toUpperCase().includes(word.toUpperCase())) {
+            returnValue = true;
+        }
+    })
+    return returnValue;
 }

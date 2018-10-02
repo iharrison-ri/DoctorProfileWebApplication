@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import {Consumer} from '../store';
-
 import ProfileTop from './ProfileTop';
 import ProfileBottom from './ProfileBottom';
 import NavBtn from './NavBtn';

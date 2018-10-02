@@ -12,25 +12,11 @@ import {
     SEARCHED_PROFILES
 } from './actions.js';
 
-
-
-
-
-// calculate the age given the year
-// function getAge( dateString ) {
-//     var today = new Date();
-//     var birthDate = new Date(dateString);
-//     var age = today.getFullYear() - birthDate.getFullYear();
-//     var m = today.getMonth() - birthDate.getMonth();
-//     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-//         age--;
-//     }
-//     return age;
-// }
-
-
-
-
+// calculate the age given the year function getAge( dateString ) {     var
+// today = new Date();     var birthDate = new Date(dateString);     var age =
+// today.getFullYear() - birthDate.getFullYear();     var m = today.getMonth() -
+// birthDate.getMonth();     if (m < 0 || (m === 0 && today.getDate() <
+// birthDate.getDate())) {         age--;     }     return age; }
 
 const Context = React.createContext();
 
@@ -84,10 +70,16 @@ const reducer = (state, action) => {
                 profiles: newProfiles3
             }
         case SET_RANGE:
-            const newProfiles4 = [...state.profiles]
+            const newProfiles4 = [...state.profiles];
+            const { high, low } = action.payload;
             newProfiles4[state.profileEditId].details[action.payload.field].sliderValues.low = action.payload.low;
             newProfiles4[state.profileEditId].details[action.payload.field].sliderValues.high = action.payload.high;
-            newProfiles4[state.profileEditId].details[action.payload.field].value = (action.payload.low === action.payload.high) ? action.payload.low : `${action.payload.low} - ${action.payload.high}`;
+
+            newProfiles4[state.profileEditId].details[action.payload.field].value = (action.payload.low === action.payload.high)
+                ? action.payload.low
+                : ((high === 100 || high === "100") && (high !== low))
+                ? `${low}+`
+                : `${low} - ${high}`;
             return {
                 ...state,
                 profiles: newProfiles4

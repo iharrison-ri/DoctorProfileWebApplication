@@ -7,7 +7,6 @@ import RangeSlider from './RangeSlider';
 import ProfileImg from './ProfileImg';
 import AddNewFieldBtn from './AddNewFieldBtn';
 import AddField from './AddField';
-
 import {update} from '../util/methods.js';
 
 // actions
@@ -25,6 +24,7 @@ class Edit extends Component {
         return (
             <Consumer>
                 {value => {
+
                     const {profiles, dispatch, profileEditId, linkInfo} = value;
                     const {details, img} = profiles[profileEditId];
                     const detailsObjKeys = Object.keys(details);
@@ -32,6 +32,17 @@ class Edit extends Component {
                     const sliderEditFields = detailsObjKeys.filter(data => !details[data].isList && !details[data].isTextEdit && details[data].hasSlider);
                     const dropDownEditFields = detailsObjKeys.filter(data => !details[data].isList && !details[data].isTextEdit && !details[data].hasSlider);
                     const listEditFields = detailsObjKeys.filter(data => details[data].isList);
+
+                    const toggleSlider = (dispatch, fieldName, profileEditId) => {
+                        dispatch({
+                            type: TOGGLE_SLIDER,
+                            payload: {
+                                field: fieldName,
+                                index: profileEditId
+                            }
+                        })
+                    }
+
                     return (
                         <div className="flexCol">
 
@@ -44,7 +55,7 @@ class Edit extends Component {
 
                                 <div className="flexCol">
                                     <ProfileImg img={img}/>
-                                    <AddNewFieldBtn />
+                                    <AddNewFieldBtn/>
                                 </div>
 
                                 <div className="topRightEdit flexCol">
@@ -53,9 +64,8 @@ class Edit extends Component {
                                         <div className="listGroupEdit">
                                             {pecilEditFields.map((fieldName, index) => {
                                                 const {value, edit} = details[fieldName];
-                                                return ((edit)
-                                                    ? (
-                                                        <div key={index} className="editSection flexRow">
+                                                return (edit
+                                                    ? <div key={index} className="editSection flexRow">
                                                             <BtnEditField
                                                                 key={index}
                                                                 data={index}
@@ -69,8 +79,7 @@ class Edit extends Component {
                                                                 placeHolder={value}
                                                                 fieldName={fieldName}/>
                                                         </div>
-                                                    )
-                                                    : (<BtnEditField
+                                                    : <BtnEditField
                                                         key={index}
                                                         profileEditId={profileEditId}
                                                         actionType={TOGGLE_NAME_EDITOR}
@@ -78,7 +87,7 @@ class Edit extends Component {
                                                         icon='fas fa-pencil-alt'
                                                         btnColor='blue'
                                                         item={value}
-                                                        fieldName={fieldName}/>))
+                                                        fieldName={fieldName}/>)
                                             })}
 
                                         </div>
@@ -88,36 +97,23 @@ class Edit extends Component {
                                                 const {hasSlider, name, value, sliderValues, showSlider} = details[fieldName];
                                                 return (
                                                     <div key={index} className="listGroupEdit">
-
                                                         {(hasSlider === true && showSlider)
                                                             ? <RangeSlider
                                                                     fieldName={fieldName}
                                                                     profileEditId={profileEditId}
                                                                     sliderValues={sliderValues}/>
                                                             : null}
-
                                                         <div className="oneLineInfoEdit">
-
                                                             <p className="listHeadingEdit">
                                                                 {name}
                                                             </p>
-
-                                                            <div className="pointer">
+                                                            <div className="rangeSlider">
                                                                 <p
                                                                     className="noMargins"
-                                                                    onClick={() => {
-                                                                    dispatch({
-                                                                        type: TOGGLE_SLIDER,
-                                                                        payload: {
-                                                                            field: fieldName,
-                                                                            index: profileEditId
-                                                                        }
-                                                                    })
-                                                                }}>{value}
+                                                                    onClick={toggleSlider.bind(this, dispatch, fieldName, profileEditId)}>{value}
                                                                     <i className="fas fa-exchange-alt rangeBtn"></i>
                                                                 </p>
                                                             </div>
-
                                                         </div>
                                                     </div>
                                                 )
@@ -129,12 +125,10 @@ class Edit extends Component {
                                                 const {name, options} = details[fieldName];
                                                 return (
                                                     <div key={index} className="listGroupEdit">
-
                                                         <div className="oneLineInfoEdit">
                                                             <p className="listHeadingEdit">
                                                                 {name}
                                                             </p>
-
                                                             <select
                                                                 onBlur={update.bind(this, {
                                                                 actionType: EDIT_DROPDOWN,
@@ -151,7 +145,6 @@ class Edit extends Component {
                                                                     </option>
                                                                 ))}
                                                             </select>
-
                                                         </div>
                                                     </div>
                                                 )
@@ -194,14 +187,15 @@ class Edit extends Component {
                                                         </div>
                                                     </React.Fragment>
                                                 )
-
                                             })}
                                         </div>
 
                                     </div>
-                                    <AddField />
+
+                                    <AddField/>
+
                                 </div>
-                            
+
                             </div>
 
                         </div>
