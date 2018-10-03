@@ -1,60 +1,125 @@
 const express = require('express');
 const router = express.Router();
 
-// bring in the sequilize object
+// bring in an instance of the Sequelize object
 const Sequelize = require('sequelize');
-// bring in the configuration
-const config = require('./config/config').db;
-// export an instance of the Sequelize object
-const sequelize = new Sequelize(config)
-// test the connection to the database
-sequelize.authenticate()
-    .then(() => console.log('connected to the database!!'))
-    .catch(error => console.log(error));
+//bring in DB models
+const sequelize = require("./models")
 
-// define a model
-const DB = sequelize.define("TestingPatientAccess", {
-    name: { type: Sequelize.STRING },
-    idField: { type: Sequelize.INTEGER }
-})
+// bring in the database models
+const models = {
+    Affiliates: require("./models/Affiliates"),
+    // ContactFacilityTypes: require("./models/ContactFacilityTypes"),
+    ContactInfo: require("./models/ContactInfo"),
+    Credentials: require("./models/Credentials"),
+    Expertise: require("./models/Expertise"),
+    ExpertiseTypes: require("./models/ExpertiseTypes"),
+    Notes: require("./models/Notes"),
+    Profiles: require("./models/Profiles"),
+    ProfileToAffiliates: require("./models/ProfileToAffiliates"),
+    ProfileToContactInfo: require("./models/ProfileToContactInfo"),
+    ProfileToCredentials: require("./models/ProfileToCredentials"),
+    ProfileToExpertise: require("./models/ProfileToExpertise"),
+    ProfileToNotes: require("./models/ProfileToNotes"),
+    ProfileToRestrictions: require("./models/ProfileToRestrictions"),
+    ProfileToSpeciality: require("./models/ProfileToSpeciality"),
+    Restrictions: require("./models/Restrictions"),
+    Speciality: require("./models/Speciality")
+}
 
-// CREATE a profile
-router.post("/addprofile", (req, res) => {
-    const profile = {
-        name: req.body.name,
-        idField: req.body.idField
+// bring in all model references
+const myModelRefs = require("./models/modelFieldRef/models");
+
+const handleDate = (fieldsToAdd) => {
+    const dateProperties = ["EffectiveDate", "TermDate"];
+    dateProperties.map(data => {
+        if (fieldsToAdd.hasOwnProperty(data)) {
+            fieldsToAdd[data] = Date.now();
+        }
+    })
+}
+
+// CREATE a record
+router.post("/addfield", (req, res) => {
+    const fieldsToAdd = {
+        ...req.body.values
     }
-    DB.create(profile).then(() => {
-        res.json({ profilecreated: true })
-    }).catch(err => console.log(err));
+    handleDate(fieldsToAdd);
+    const Field = models[req.body.field];
+    Field
+        .create({
+        ...fieldsToAdd
+    })
+        .then(() => {
+            res.json({created: true})
+        })
+        .catch(err => console.log(err));
 })
 
-// READ all profiles
-router.get("/allprofiles", (req, res) => {
-    DB.findAll().then(profiles => {
-        res.json(profiles)
-    }).catch(err => console.log(err));
+// READ all in record
+router.post("/allinrecord", (req, res) => {
+    const Field = models[req.body.field];
+    Field
+        .findAll()
+        .then(profiles => {
+            res.json(profiles)
+        })
+        .catch(err => console.log(err));
 })
 
-// UPDATE a profile by id
-router.post("/updateprofile", (req, res) => {
+const getRecords = (table) => {
+    return table.findAll();
+}
+
+const arrayToObject = (objectKeys, arr) => {
+    const obj = {};
+    arr.forEach((data, index) => {
+        obj[objectKeys[index]] = data;
+    })
+    return obj;
+}
+
+// READ all records
+router.get("/allrecords", (req, res) => {
+    const allRecords = [];
+    const modelsArr = Object.keys(models);
+    for(let i = 0; i < modelsArr.length; i++){
+        allRecords.push(getRecords(models[modelsArr[i]]));
+    }
+    Promise.all(allRecords).then(records => {
+        res.send(arrayToObject(modelsArr, records))
+    })
+})
+
+// UPDATE a record by id
+router.post("/updaterecord", (req, res) => {
     const id = req.body.id;
     const updates = req.body.updates;
-    DB.findById(id).then(profile => {
-        profile.update(updates).then(() => {
-            res.json({ updated: true })
-        }).catch(err => console.log(err));
-    }).catch(err => console.log(err));
+    const Field = models[req.body.field];
+    Field
+        .findById(id)
+        .then(profile => {
+            profile
+                .update(updates)
+                .then(() => {
+                    res.json({updated: true})
+                })
+                .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
 })
 
-// DELETE a profile by id
-router.delete("/deleteprofile", (req, res) => {
+// DELETE a record by id
+router.delete("/deleterecord", (req, res) => {
     const id = req.body.id;
-    DB.findById(id).then(profile => {
-        console.log(profile)
-        profile.destroy();
-        res.json({ profiledeleted: profile })
-    }).catch(err => console.log(err));
+    const Field = models[req.body.field];
+    Field
+        .findById(id)
+        .then(profile => {
+            profile.destroy();
+            res.json({profiledeleted: profile})
+        })
+        .catch(err => console.log(err));
 })
 
 module.exports = router;

@@ -279,7 +279,7 @@ select {
     color: #fff;
 }
 
-..bottomRightBody > div {
+.bottomRightBody > div {
     overflow-y: scroll;
 }
 
