@@ -3,25 +3,16 @@ const Sequelize = require('sequelize');
 //bring in DB model
 const sequelize = require("./index");
 // define a model
-const ProfileToNotes = sequelize.define("ProfileToNotes", {
+const ContactTypes = sequelize.define("ContactTypes", {
     Id: {
         type: Sequelize.INTEGER
     },
-    ProfileId: {
-        type: Sequelize.INTEGER
-    },
-    NotesId: {
-        type: Sequelize.INTEGER
-    },
-    AssignedBy: {
+    ContactTypeDescription: {
         type: Sequelize.STRING(64)
-    },
-    DateAssigned: {
-        type: Sequelize.DATE
     }
 }, {
     timestamps: false,
     freezeTableName: true
 })
 
-module.exports = ProfileToNotes;
+module.exports = ContactTypes;

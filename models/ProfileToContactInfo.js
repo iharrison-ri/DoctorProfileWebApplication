@@ -7,6 +7,9 @@ const ProfileToContactInfo = sequelize.define("ProfileToContactInfo", {
     Id: {
         type: Sequelize.INTEGER
     },
+    ProfileId: {
+        type: Sequelize.INTEGER
+    },
     ContactInfoId: {
         type: Sequelize.INTEGER
     },

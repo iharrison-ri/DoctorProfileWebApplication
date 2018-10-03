@@ -7,6 +7,12 @@ const ProfileToRestrictions = sequelize.define("ProfileToRestrictions", {
     Id: {
         type: Sequelize.INTEGER
     },
+    ProfileId: {
+        type: Sequelize.INTEGER
+    },
+    RestrictionId: {
+        type: Sequelize.INTEGER
+    },
     AssignedBy: {
         type: Sequelize.STRING(64)
     },

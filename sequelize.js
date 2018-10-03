@@ -9,8 +9,9 @@ const sequelize = require("./models")
 // bring in the database models
 const models = {
     Affiliates: require("./models/Affiliates"),
-    // ContactFacilityTypes: require("./models/ContactFacilityTypes"),
+    ContactTypes: require("./models/ContactTypes"),
     ContactInfo: require("./models/ContactInfo"),
+    Institutions: require("./models/Institutions"),
     Credentials: require("./models/Credentials"),
     Expertise: require("./models/Expertise"),
     ExpertiseTypes: require("./models/ExpertiseTypes"),

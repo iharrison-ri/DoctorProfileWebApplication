@@ -15,6 +15,9 @@ const Affiliates = sequelize.define("Affiliates", {
     },
     AffiliateOrder: {
         type: Sequelize.INTEGER
+    },
+    Name: {
+        type: Sequelize.STRING(64)
     }
 }, {
     timestamps: false,

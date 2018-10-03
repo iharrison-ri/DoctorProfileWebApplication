@@ -9,6 +9,9 @@ const Expertise = sequelize.define("Expertise", {
     },
     Name: {
         type: Sequelize.STRING(150)
+    },
+    ExpertiseTypeId: {
+        type: Sequelize.INTEGER
     }
 }, {
     timestamps: false,

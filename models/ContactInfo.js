@@ -42,6 +42,9 @@ const ContactInfo = sequelize.define("ContactInfo", {
     },
     EffectiveDate: {
         type: Sequelize.DATE
+    },
+    ContactTypeId: {
+        type: Sequelize.INTEGER
     }
 }, {
     timestamps: false,
