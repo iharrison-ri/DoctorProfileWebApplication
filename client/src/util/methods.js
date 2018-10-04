@@ -1,4 +1,5 @@
-import {EDIT_NAME, ADD_DETAILS_ENTRY, REMOVE_DETAILS_ENTRY, EDIT_DROPDOWN, TOGGLE_NAME_EDITOR} from '../store/actions';
+import {EDIT_NAME, ADD_DETAILS_ENTRY, REMOVE_DETAILS_ENTRY, EDIT_DROPDOWN, TOGGLE_NAME_EDITOR} from "../store/actions";
+import {template} from "./template";
 
 // middleware for the dispatch in the context
 export const update = (params, e) => {
@@ -166,4 +167,54 @@ export const isInArray = (comparer, word) => {
         }
     })
     return returnValue;
+}
+
+export const arrayToObject = (objectKeys, obj) => {
+    const returnObj = {};
+    objectKeys.forEach(data => {
+        returnObj[data] = obj[data]
+    })
+    return returnObj;
+}
+
+export const getProfileDetails = (data, profileTablesObject, profileTableMappersObject) => {
+    const details = [];
+    const templateKeys = Object.keys(template);
+    templateKeys.forEach(data => {
+        const templateField = template[data];
+        if(templateField.hasOwnProperty("options")){
+            debugger
+        } else if(templateField.hasOwnProperty("sliderValues")){
+            debugger
+        } else if(templateField.value !== null) {
+            debugger
+        } else {
+            debugger
+        }
+    })
+    debugger
+    return details;
+}
+
+export const extractProfileData = (data) => {
+    const allRecordData = data.data;
+    const recordKeys = Object.keys(allRecordData);
+    const profileTableMappersArray = recordKeys.filter(data => data.includes("ProfileTo"));
+    const profileTablesArray = recordKeys.filter(data => !data.includes("ProfileTo") && data !== "Profiles");
+
+    const profileTableMappersObject = arrayToObject(profileTableMappersArray, allRecordData);
+    const profileTablesObject = arrayToObject(profileTablesArray, allRecordData);
+    const profiles = allRecordData["Profiles"];
+
+    const appState = [];
+
+    profiles.forEach(data => {
+        const profile = {};
+        profile.id = data.Id;
+        profile.img = data.ImageLocation;
+        // profile.details = getProfileDetails(data, profileTablesObject, profileTableMappersObject);
+        appState.push(profile);
+    })
+    // debugger
+    return appState;
 }

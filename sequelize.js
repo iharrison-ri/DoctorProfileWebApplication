@@ -7,47 +7,21 @@ const Sequelize = require('sequelize');
 const sequelize = require("./models")
 
 // bring in the database models
-const models = {
-    Affiliates: require("./models/Affiliates"),
-    ContactTypes: require("./models/ContactTypes"),
-    ContactInfo: require("./models/ContactInfo"),
-    Institutions: require("./models/Institutions"),
-    Credentials: require("./models/Credentials"),
-    Expertise: require("./models/Expertise"),
-    ExpertiseTypes: require("./models/ExpertiseTypes"),
-    Notes: require("./models/Notes"),
-    Profiles: require("./models/Profiles"),
-    ProfileToAffiliates: require("./models/ProfileToAffiliates"),
-    ProfileToContactInfo: require("./models/ProfileToContactInfo"),
-    ProfileToCredentials: require("./models/ProfileToCredentials"),
-    ProfileToExpertise: require("./models/ProfileToExpertise"),
-    ProfileToNotes: require("./models/ProfileToNotes"),
-    ProfileToRestrictions: require("./models/ProfileToRestrictions"),
-    ProfileToSpeciality: require("./models/ProfileToSpeciality"),
-    Restrictions: require("./models/Restrictions"),
-    Speciality: require("./models/Speciality")
-}
-
-// bring in all model references
-const myModelRefs = require("./models/modelFieldRef/models");
-
-const handleDate = (fieldsToAdd) => {
-    const dateProperties = ["EffectiveDate", "TermDate"];
-    dateProperties.map(data => {
-        if (fieldsToAdd.hasOwnProperty(data)) {
-            fieldsToAdd[data] = Date.now();
-        }
-    })
-}
+const models = require("./models/allModelExports/allModelExports");
+// bring in logic
+const handleDate = require("./models/util/methods").handleDate;
+const getRecords = require("./models/util/methods").getRecords;
+const arrayToObject = require("./models/util/methods").arrayToObject;
 
 // CREATE a record
 router.post("/addfield", (req, res) => {
+    //object containing all fields of a record to be added to the DB
     const fieldsToAdd = {
         ...req.body.values
     }
-    handleDate(fieldsToAdd);
-    const Field = models[req.body.field];
-    Field
+    // handleDate(fieldsToAdd);
+    const TableToSearch = models[req.body.field];
+    TableToSearch
         .create({
         ...fieldsToAdd
     })
@@ -59,45 +33,37 @@ router.post("/addfield", (req, res) => {
 
 // READ all in record
 router.post("/allinrecord", (req, res) => {
-    const Field = models[req.body.field];
-    Field
+    const TableToSearch = models[req.body.tableToSearch];
+    TableToSearch
         .findAll()
-        .then(profiles => {
-            res.json(profiles)
+        .then(recordsInTable => {
+            res.json(recordsInTable)
         })
         .catch(err => console.log(err));
 })
 
-const getRecords = (table) => {
-    return table.findAll();
-}
-
-const arrayToObject = (objectKeys, arr) => {
-    const obj = {};
-    arr.forEach((data, index) => {
-        obj[objectKeys[index]] = data;
-    })
-    return obj;
-}
-
 // READ all records
 router.get("/allrecords", (req, res) => {
     const allRecords = [];
-    const modelsArr = Object.keys(models);
-    for(let i = 0; i < modelsArr.length; i++){
-        allRecords.push(getRecords(models[modelsArr[i]]));
+    const arrayOfModelKeys = Object.keys(models);
+    for (let i = 0; i < arrayOfModelKeys.length; i++) {
+        const modelKey = arrayOfModelKeys[i];
+        const callForData = getRecords(models[modelKey]);
+        allRecords.push(callForData);
     }
-    Promise.all(allRecords).then(records => {
-        res.send(arrayToObject(modelsArr, records))
-    })
+    Promise
+        .all(allRecords)
+        .then(records => {
+            res.json(arrayToObject(arrayOfModelKeys, records));
+        })
+        .catch(err => console.log(err));
 })
 
 // UPDATE a record by id
 router.post("/updaterecord", (req, res) => {
-    const id = req.body.id;
-    const updates = req.body.updates;
-    const Field = models[req.body.field];
-    Field
+    const {id, updates, field} = req.body;
+    const TableToSearch = models[field];
+    TableToSearch
         .findById(id)
         .then(profile => {
             profile
@@ -112,9 +78,9 @@ router.post("/updaterecord", (req, res) => {
 
 // DELETE a record by id
 router.delete("/deleterecord", (req, res) => {
-    const id = req.body.id;
-    const Field = models[req.body.field];
-    Field
+    const {id, tableToSearch} = req.body;
+    const TableToSearch = models[tableToSearch];
+    TableToSearch
         .findById(id)
         .then(profile => {
             profile.destroy();

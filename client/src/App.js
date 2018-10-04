@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+
 //the Provider component passes down the state to each component
 import {Provider} from './store';
 import Profile from './components/Profile';

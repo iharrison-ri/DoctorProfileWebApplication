@@ -1,0 +1,20 @@
+module.exports = {
+    Affiliates: require("../Affiliates"),
+    ContactInfo: require("../ContactInfo"),
+    ContactTypes: require("../ContactTypes"),
+    Credentials: require("../Credentials"),
+    Expertise: require("../Expertise"),
+    ExpertiseTypes: require("../ExpertiseTypes"),
+    Institutions: require("../Institutions"),
+    Notes: require("../Notes"),
+    Profiles: require("../Profiles"),
+    ProfileToAffiliates: require("../ProfileToAffiliates"),
+    ProfileToContactInfo: require("../ProfileToContactInfo"),
+    ProfileToCredentials: require("../ProfileToCredentials"),
+    ProfileToExpertise: require("../ProfileToExpertise"),
+    ProfileToNotes: require("../ProfileToNotes"),
+    ProfileToRestrictions: require("../ProfileToRestrictions"),
+    ProfileToSpeciality: require("../ProfileToSpeciality"),
+    Restrictions: require("../Restrictions"),
+    Speciality: require("../Speciality")
+}

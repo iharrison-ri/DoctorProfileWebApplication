@@ -9,7 +9,8 @@ import {
     SET_RANGE,
     TOGGLE_SLIDER,
     DOCTOR_SELECTED,
-    SEARCHED_PROFILES
+    SEARCHED_PROFILES,
+    POPULATE_UI
 } from './actions.js';
 
 // calculate the age given the year function getAge( dateString ) {     var
@@ -22,6 +23,8 @@ const Context = React.createContext();
 
 const reducer = (state, action) => {
     switch (action.type) {
+        case POPULATE_UI:
+            return state
         case EDIT_NAME:
             const newProfiles = [...state.profiles];
             newProfiles[state.profileEditId].details[action.payload.fieldName].value = action
@@ -150,62 +153,43 @@ export class Provider extends Component {
                     name: {
                         name: "name",
                         value: "Kris C. Dodson",
-                        edit: false,
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
+                        isTextEdit: true
                     },
                     suffix: {
                         name: "suffix",
                         value: "MD",
-                        isTextEdit: true,
-                        edit: false,
-                        isList: false,
-                        hasSlider: false
+                        isTextEdit: true
                     },
                     apmAbbrev: {
                         name: "APM Abbrev",
                         value: "CDOD",
-                        isTextEdit: true,
-                        edit: false,
-                        isList: false,
-                        hasSlider: false
+                        isTextEdit: true
                     },
                     partnerStatus: {
                         name: "Partner Status",
                         value: "Partner",
                         options: [
                             "Partner", "Associate"
-                        ],
-                        isList: false,
-                        hasSlider: false
+                        ]
                     },
                     dob: {
                         name: "Date of birth",
                         value: "3/11/1977",
-                        isTextEdit: true,
-                        edit: false,
-                        isList: false,
-                        hasSlider: false
+                        isTextEdit: true
                     },
                     age: {
                         name: "Age",
                         value: "41",
-                        isTextEdit: true,
-                        edit: false,
-                        isList: false,
-                        hasSlider: false
+                        isTextEdit: true
                     },
                     patientAgeRange: {
                         name: 'Patient Age Range',
                         value: "12+",
-                        isList: false,
                         hasSlider: true,
                         sliderValues: {
                             low: 12,
                             high: 100
-                        },
-                        showSlider: false
+                        }
                     },
                     expertise: {
                         name: 'Expertise',
@@ -234,59 +218,49 @@ export class Provider extends Component {
                             "Tommy John Surgery",
                             "Total Shoulder Replacement"
                         ],
-                        isList: true,
-                        hasSlider: false
+                        isList: true
                     },
                     patientExceptions: {
                         name: 'Patient Exceptions',
                         value: [
                             "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements"
                         ],
-                        isList: true,
-                        hasSlider: false
+                        isList: true
                     },
                     officeLocations: {
                         name: 'Office Locations',
                         value: [
                             "Center City", "Bryn Mawr"
                         ],
-                        isList: true,
-                        hasSlider: false
+                        isList: true
                     },
                     surgicalLocations: {
                         name: 'Surgical Locations',
                         value: [
                             "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center"
                         ],
-                        isList: true,
-                        hasSlider: false
+                        isList: true
                     },
                     workComp: {
                         name: 'Work Comp',
                         value: "Yes",
                         options: [
                             "Yes", "No"
-                        ],
-                        isList: false,
-                        hasSlider: false
+                        ]
                     },
                     auto: {
                         name: 'Auto',
                         value: "Yes",
                         options: [
                             "Yes", "No"
-                        ],
-                        isList: false,
-                        hasSlider: false
+                        ]
                     },
                     acuteInjuries: {
                         name: 'Acute Injuries',
                         value: "Yes",
                         options: [
                             "Yes", "No"
-                        ],
-                        isList: false,
-                        hasSlider: false
+                        ]
                     }
                 }
             }, {
