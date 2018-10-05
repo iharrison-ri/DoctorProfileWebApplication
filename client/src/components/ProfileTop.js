@@ -11,7 +11,7 @@ class ProfileTop extends Component {
         const style = this.props.addStlye;
         const imgLocation = process.env.PUBLIC_URL + img;
         const name = details.name.value;
-        const suffix = details.suffix.value;
+        const suffix = details.suffix.value.join("/");
         const apmAbbrev = details.apmAbbrev.value;
         const partnerStatus = details.partnerStatus.value;
         const dob = details.dob.value;

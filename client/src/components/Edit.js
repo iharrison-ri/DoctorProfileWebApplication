@@ -28,7 +28,7 @@ class Edit extends Component {
                     const {profiles, dispatch, profileEditId, linkInfo} = value;
                     const {details, img} = profiles[profileEditId];
                     const detailsObjKeys = Object.keys(details);
-                    const pecilEditFields = detailsObjKeys.filter(data => details[data].isTextEdit);
+                    const pecilEditFields = detailsObjKeys.filter(data => details[data].isTextEdit && data !== "age");
                     const sliderEditFields = detailsObjKeys.filter(data => !details[data].isList && !details[data].isTextEdit && details[data].hasSlider);
                     const dropDownEditFields = detailsObjKeys.filter(data => !details[data].isList && !details[data].isTextEdit && !details[data].hasSlider);
                     const listEditFields = detailsObjKeys.filter(data => details[data].isList);
@@ -55,7 +55,7 @@ class Edit extends Component {
 
                                 <div className="flexCol">
                                     <ProfileImg img={img}/>
-                                    <AddNewFieldBtn/>
+                                    {/* <AddNewFieldBtn/> */}
                                 </div>
 
                                 <div className="topRightEdit flexCol">
@@ -76,7 +76,6 @@ class Edit extends Component {
                                                                 icon='fas fa-plus'
                                                                 btnColor='blue'
                                                                 isInput={true}
-                                                                placeHolder={value}
                                                                 fieldName={fieldName}/>
                                                         </div>
                                                     : <BtnEditField

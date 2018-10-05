@@ -1,5 +1,7 @@
+import moment from "moment";
+
 import {EDIT_NAME, ADD_DETAILS_ENTRY, REMOVE_DETAILS_ENTRY, EDIT_DROPDOWN, TOGGLE_NAME_EDITOR} from "../store/actions";
-import {template} from "./template";
+import {getProfileTemplate} from "./template";
 
 // middleware for the dispatch in the context
 export const update = (params, e) => {
@@ -177,21 +179,87 @@ export const arrayToObject = (objectKeys, obj) => {
     return returnObj;
 }
 
+export const getAge = (birthdate) => {
+    const ageMonthDiff = moment().diff(birthdate, "months");
+    return parseInt(ageMonthDiff/12);
+}
+
+export const formatDOB = (dob) => {
+    const DOB = moment(dob).format("MM/DD/YYYY");
+    return DOB
+}
+
+export const mapProfileIdToField = (id, fields, mapper, idName) => {
+    const mapperIDs = mapper.filter(data => data.ProfileId === id);
+    const fieldId = mapperIDs.map(data => data[idName]);
+    const fieldArr = fields
+        .filter(data => fieldId.includes(data.Id))
+        .map(data => data.Name);
+    return fieldArr;
+}
+
 export const getProfileDetails = (data, profileTablesObject, profileTableMappersObject) => {
-    const details = [];
-    const templateKeys = Object.keys(template);
-    templateKeys.forEach(data => {
-        const templateField = template[data];
-        if(templateField.hasOwnProperty("options")){
-            debugger
-        } else if(templateField.hasOwnProperty("sliderValues")){
-            debugger
-        } else if(templateField.value !== null) {
-            debugger
-        } else {
-            debugger
+    const {Id, DOB, FirstName, LastName, SysId} = data;
+
+    const {
+        Affiliates,
+        ContactInfo,
+        ContactTypes,
+        Credentials,
+        Expertise,
+        ExpertiseTypes,
+        Institutions,
+        Notes,
+        Restrictions,
+        Speciality
+    } = profileTablesObject;
+
+    const {
+        ProfileToAffiliates,
+        ProfileToContactInfo,
+        ProfileToContactTypes,
+        ProfileToCredentials,
+        ProfileToExpertise,
+        ProfileToExpertiseTypes,
+        ProfileToInstitutions,
+        ProfileToNotes,
+        ProfileToRestrictions,
+        ProfileToSpeciality
+    } = profileTableMappersObject;
+
+    const detailsObj = {
+        acuteInjuries: {
+            value: null,
+            options: null
+        },
+        age: getAge(DOB),
+        apmAbbrev: SysId,
+        auto: {
+            value: null,
+            options: null
+        },
+        dob: formatDOB(DOB),
+        expertise: mapProfileIdToField(Id, Expertise, ProfileToExpertise, "ExpertiseId"),
+        name: `${FirstName} ${LastName}`,
+        officeLocations: null,
+        partnerStatus: {
+            value: null,
+            list: null
+        },
+        patientAgeRange: {
+            value: null,
+            range: null
+        },
+        patientExceptions: null,
+        suffix: null,
+        surgicalLocations: mapProfileIdToField(Id, Affiliates, ProfileToAffiliates, "AffiliateId"),
+        workComp: {
+            value: null,
+            options: null
         }
-    })
+    }
+
+    const details = getProfileTemplate(detailsObj);
     debugger
     return details;
 }
@@ -212,9 +280,21 @@ export const extractProfileData = (data) => {
         const profile = {};
         profile.id = data.Id;
         profile.img = data.ImageLocation;
-        // profile.details = getProfileDetails(data, profileTablesObject, profileTableMappersObject);
+        profile.details = getProfileDetails(data, profileTablesObject, profileTableMappersObject);
+        profile.excludedInRightSideColumn = [
+            "expertise",
+            "surgicalLocations",
+            "officeLocations",
+            "name",
+            "suffix",
+            "apmAbbrev",
+            "partnerStatus",
+            "dob",
+            "age"
+        ];
         appState.push(profile);
     })
     // debugger
+
     return appState;
 }

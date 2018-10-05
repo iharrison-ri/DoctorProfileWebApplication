@@ -26,6 +26,7 @@ html {
 
 body {
     height: 100vh;
+    transform: scale(0.9);
     width: 100vw;
 }
 
@@ -272,15 +273,13 @@ select {
 .bottomRightBody > * {
     height: 100%;
     width: 50%;
+    overflow: hidden;
+    margin-right: 0.2em;
 }
 
 .even {
     background-color: var(--textColor);
     color: #fff;
-}
-
-.bottomRightBody > div {
-    overflow-y: scroll;
 }
 
 .bottomRightBody > div > p {
@@ -294,6 +293,10 @@ select {
 
 .bottomLeftSection {
     width: 18em;
+}
+
+.bottomLeftSection > * > p {
+    margin: 0.5em 0;
 }
 
 /* topRightEdit */
