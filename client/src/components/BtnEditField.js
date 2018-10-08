@@ -9,7 +9,8 @@ class BtnEditField extends Component {
             icon,
             item,
             name,
-            data
+            data,
+            placeholder
         } = this.props;
 
         const field = (item)
@@ -19,7 +20,8 @@ class BtnEditField extends Component {
             name={name}
             className="editInput"
             type="text"
-            placeholder="new entry"/>
+            placeholder="new entry"
+            defaultValue={placeholder ? placeholder : null}/>
 
         return (
             <div className='btnBox flexRow'>

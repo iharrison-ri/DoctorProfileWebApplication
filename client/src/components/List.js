@@ -4,7 +4,7 @@ class List extends Component {
     render() {
         
         const {heading, list} = this.props;
-
+        
         return (
             <div className="listGroup">
                 <p className="listHeading">{heading}</p>

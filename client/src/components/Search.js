@@ -16,7 +16,7 @@ class Search extends Component {
         axios
             .get("/allrecords")
             .then(data => {
-                const appState = extractProfileData(data);
+                const appState = extractProfileData(data.data);
                 this.globalDispatch({type: POPULATE_UI, payload: appState})
             })
     }

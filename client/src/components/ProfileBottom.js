@@ -3,8 +3,9 @@ import React, {Component} from 'react';
 import {Consumer} from "../store";
 import {getColumns} from "../util/filter";
 import Table from "./Table";
-import InfoLine from "./InfoLine";
 import List from "./List";
+
+import {formatAddress} from "../util/methods";
 
 class ProfileBottom extends Component {
     render() {
@@ -12,7 +13,9 @@ class ProfileBottom extends Component {
             <Consumer>
                 {value => {
 
-                    const {details, excludedInRightSideColumn} = this.props.profile;
+                    const {details, excludedInRightSideColumn, contactInfo} = this.props.profile;
+                    formatAddress(contactInfo)
+                    const contactInfoKeys = Object.keys(contactInfo);
                     const detailsKeys = Object.keys(details);
                     const expertiseColumns = getColumns(details.expertise.value);
                     const {leftColumns, rightColumns} = expertiseColumns;
@@ -29,13 +32,19 @@ class ProfileBottom extends Component {
 
                             <div className="bottomLeft">
                                 <div className="bottomLeftSection">
+
+                                    {contactInfoKeys.map((data, index) => {
+                                        return (contactInfo[data] === null || contactInfo[data] === undefined)
+                                            ? null
+                                            : <List key={index} heading={data} list={[contactInfo[data]]}/>
+                                    })}
+
                                     {detailsKeys.map((data, index) => {
                                         return (excludedInRightSideColumn.includes(data))
                                             ? null
-                                            : (typeof details[data].value === 'string')
-                                                ? <InfoLine key={index} name={details[data].name} value={details[data].value}/>
-                                                : <List key={index} heading={details[data].name} list={details[data].value}/>
+                                            : <List key={index} heading={details[data].name} list={details[data].value}/>
                                     })}
+
                                 </div>
                             </div>
 

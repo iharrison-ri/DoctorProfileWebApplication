@@ -13,18 +13,18 @@ import {
     POPULATE_UI
 } from './actions.js';
 
-// calculate the age given the year function getAge( dateString ) {     var
-// today = new Date();     var birthDate = new Date(dateString);     var age =
-// today.getFullYear() - birthDate.getFullYear();     var m = today.getMonth() -
-// birthDate.getMonth();     if (m < 0 || (m === 0 && today.getDate() <
-// birthDate.getDate())) {         age--;     }     return age; }
-
 const Context = React.createContext();
 
 const reducer = (state, action) => {
     switch (action.type) {
         case POPULATE_UI:
-            return state
+            return state;
+            // return {
+            //     ...state,
+            //     profiles: [
+            //         ...action.payload
+            //     ]
+            // }
         case EDIT_NAME:
             const newProfiles = [...state.profiles];
             newProfiles[state.profileEditId].details[action.payload.fieldName].value = action
@@ -164,9 +164,9 @@ export class Provider extends Component {
                 ],
                 notes: [
                     {
-                        note: "These are notes 1"
+                        Notes: "These are notes 1"
                     }, {
-                        note: "These are notes 2"
+                        Notes: "These are notes 2"
                     }
                 ],
                 details: {
