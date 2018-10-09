@@ -3,7 +3,8 @@ import React, {Component} from 'react';
 class Table extends Component {
     render() {
 
-        const {heading, leftColumns, rightColumns} = this.props;
+        let {heading, leftColumns, rightColumns} = this.props;
+        leftColumns = (leftColumns && leftColumns.length > 0) ? leftColumns : ["N/A"];
 
         return (
             <div className="listGroup">

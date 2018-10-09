@@ -26,6 +26,7 @@ html {
 
 body {
     height: 100vh;
+    transform: scale(0.9);
     width: 100vw;
 }
 
@@ -65,6 +66,7 @@ body {
 }
 
 a {
+    color: var(--textColor);
     text-decoration: none;
 }
 
@@ -146,6 +148,25 @@ select {
 
 /* nav bar */
 .navBar {}
+
+/* loding */
+.loading {
+    perspective: 252px;
+}
+
+.loading > img {
+    height: 30em;
+    transition: all 0.5s;
+    opacity: 0.1;
+}
+
+.loading > img.rotateRight {
+    transform: rotateY(40deg)
+}
+
+.loading > img.rotateLeft {
+    transform: rotateY(-40deg)
+}
 
 /* top */
 .top {
@@ -272,15 +293,13 @@ select {
 .bottomRightBody > * {
     height: 100%;
     width: 50%;
+    overflow: hidden;
+    margin-right: 0.2em;
 }
 
 .even {
     background-color: var(--textColor);
     color: #fff;
-}
-
-.bottomRightBody > div {
-    overflow-y: scroll;
 }
 
 .bottomRightBody > div > p {
@@ -294,6 +313,10 @@ select {
 
 .bottomLeftSection {
     width: 18em;
+}
+
+.bottomLeftSection > * > p {
+    margin: 0.5em 0;
 }
 
 /* topRightEdit */
@@ -667,6 +690,11 @@ option:hover {
 
 .searchProfile .top {
     transition: all 0.5s;
+}
+
+/* -webkit-transform removes the css flickering when using the transform scale on the img */
+img {
+    -webkit-transform: translate3d(0, 0, 0);
 }
 
 .doctorImage img {

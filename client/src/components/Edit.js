@@ -3,45 +3,27 @@ import React, {Component} from 'react';
 import {Consumer} from '../store';
 import NavBtn from './NavBtn';
 import BtnEditField from './BtnEditField';
-import RangeSlider from './RangeSlider';
 import ProfileImg from './ProfileImg';
-import AddNewFieldBtn from './AddNewFieldBtn';
-import AddField from './AddField';
-import {update} from '../util/methods.js';
+import Heading from './Heading';
+
+import {goToLoadingScreen, getKey} from "../util/methods";
 
 // actions
-import {
-    EDIT_NAME,
-    ADD_DETAILS_ENTRY,
-    REMOVE_DETAILS_ENTRY,
-    EDIT_DROPDOWN,
-    TOGGLE_NAME_EDITOR,
-    TOGGLE_SLIDER
-} from '../store/actions.js';
+import {EDIT_NAME, ADD_DETAILS_ENTRY, REMOVE_DETAILS_ENTRY, TOGGLE_NAME_EDITOR} from '../store/actions.js';
 
 class Edit extends Component {
     render() {
         return (
             <Consumer>
                 {value => {
+                    (value.profiles.length === 0) ? goToLoadingScreen() : null;
 
                     const {profiles, dispatch, profileEditId, linkInfo} = value;
-                    const {details, img} = profiles[profileEditId];
+                    const currentProfile = profiles.filter(profile => profile.id === profileEditId);
+                    const {details, img} = currentProfile[0];
                     const detailsObjKeys = Object.keys(details);
-                    const pecilEditFields = detailsObjKeys.filter(data => details[data].isTextEdit);
-                    const sliderEditFields = detailsObjKeys.filter(data => !details[data].isList && !details[data].isTextEdit && details[data].hasSlider);
-                    const dropDownEditFields = detailsObjKeys.filter(data => !details[data].isList && !details[data].isTextEdit && !details[data].hasSlider);
+                    const pecilEditFields = detailsObjKeys.filter(data => details[data].isTextEdit && data !== "age");
                     const listEditFields = detailsObjKeys.filter(data => details[data].isList);
-
-                    const toggleSlider = (dispatch, fieldName, profileEditId) => {
-                        dispatch({
-                            type: TOGGLE_SLIDER,
-                            payload: {
-                                field: fieldName,
-                                index: profileEditId
-                            }
-                        })
-                    }
 
                     return (
                         <div className="flexCol">
@@ -55,148 +37,110 @@ class Edit extends Component {
 
                                 <div className="flexCol">
                                     <ProfileImg img={img}/>
-                                    <AddNewFieldBtn/>
                                 </div>
 
                                 <div className="topRightEdit flexCol">
+
                                     <div className="topRightEditLiner">
 
                                         <div className="listGroupEdit">
                                             {pecilEditFields.map((fieldName, index) => {
                                                 const {value, edit} = details[fieldName];
-                                                return (edit
-                                                    ? <div key={index} className="editSection flexRow">
-                                                            <BtnEditField
-                                                                key={index}
-                                                                data={index}
-                                                                profileEditId={profileEditId}
-                                                                id='nameField'
-                                                                actionType={EDIT_NAME}
-                                                                dispatch={dispatch}
-                                                                icon='fas fa-plus'
-                                                                btnColor='blue'
-                                                                isInput={true}
-                                                                placeHolder={value}
-                                                                fieldName={fieldName}/>
-                                                        </div>
-                                                    : <BtnEditField
-                                                        key={index}
-                                                        profileEditId={profileEditId}
-                                                        actionType={TOGGLE_NAME_EDITOR}
-                                                        dispatch={dispatch}
-                                                        icon='fas fa-pencil-alt'
-                                                        btnColor='blue'
-                                                        item={value}
-                                                        fieldName={fieldName}/>)
-                                            })}
 
-                                        </div>
-
-                                        <div className="listGroupEdit">
-                                            {sliderEditFields.map((fieldName, index) => {
-                                                const {hasSlider, name, value, sliderValues, showSlider} = details[fieldName];
-                                                return (
-                                                    <div key={index} className="listGroupEdit">
-                                                        {(hasSlider === true && showSlider)
-                                                            ? <RangeSlider
-                                                                    fieldName={fieldName}
-                                                                    profileEditId={profileEditId}
-                                                                    sliderValues={sliderValues}/>
-                                                            : null}
-                                                        <div className="oneLineInfoEdit">
-                                                            <p className="listHeadingEdit">
-                                                                {name}
-                                                            </p>
-                                                            <div className="rangeSlider">
-                                                                <p
-                                                                    className="noMargins"
-                                                                    onClick={toggleSlider.bind(this, dispatch, fieldName, profileEditId)}>{value}
-                                                                    <i className="fas fa-exchange-alt rangeBtn"></i>
-                                                                </p>
-                                                            </div>
-                                                        </div>
+                                                const plusBtnField = (
+                                                    <div key={getKey()} className="editSection flexRow">
+                                                        <BtnEditField
+                                                            key={getKey()}
+                                                            data={index}
+                                                            profileEditId={profileEditId}
+                                                            id='nameField'
+                                                            actionType={EDIT_NAME}
+                                                            dispatch={dispatch}
+                                                            icon='fas fa-plus'
+                                                            btnColor='blue'
+                                                            isInput={true}
+                                                            placeholder={value}
+                                                            fieldName={fieldName}/>
                                                     </div>
+                                                );
+
+                                                const pencilBtnField = (<BtnEditField
+                                                    key={getKey()}
+                                                    profileEditId={profileEditId}
+                                                    actionType={TOGGLE_NAME_EDITOR}
+                                                    dispatch={dispatch}
+                                                    icon='fas fa-pencil-alt'
+                                                    btnColor='blue'
+                                                    item={value}
+                                                    fieldName={fieldName}/>);
+
+                                                return (
+                                                    <React.Fragment key={getKey()}>
+                                                        <Heading key={getKey()} heading={details[fieldName].name}/> {edit
+                                                            ? plusBtnField
+                                                            : pencilBtnField}
+                                                    </React.Fragment>
                                                 )
                                             })}
-                                        </div>
 
-                                        <div className="listGroupEdit">
-                                            {dropDownEditFields.map((fieldName, index) => {
-                                                const {name, options} = details[fieldName];
-                                                return (
-                                                    <div key={index} className="listGroupEdit">
-                                                        <div className="oneLineInfoEdit">
-                                                            <p className="listHeadingEdit">
-                                                                {name}
-                                                            </p>
-                                                            <select
-                                                                onBlur={update.bind(this, {
-                                                                actionType: EDIT_DROPDOWN,
-                                                                dispatch,
-                                                                fieldName,
-                                                                profileEditId
-                                                            })}
-                                                                className="selectBox"
-                                                                name=""
-                                                                id="">
-                                                                {options.map((fieldOption, i) => (
-                                                                    <option key={i} value="">
-                                                                        {fieldOption}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })}
                                         </div>
+                                        {/* end: listGroupEdit */}
 
                                         <div className="listGroupEdit">
                                             {listEditFields.map((fieldName, index) => {
-                                                return (
-                                                    <React.Fragment key={index}>
-                                                        <div className="listHeadingEdit flexRow">
-                                                            <div>
-                                                                {details[fieldName].name}
-                                                            </div>
-                                                        </div>
-                                                        <div className="editSection flexRow">
-                                                            <BtnEditField
+
+                                                const inputField = (
+                                                    <div className="editSection flexRow">
+                                                        <BtnEditField
+                                                            profileEditId={profileEditId}
+                                                            actionType={ADD_DETAILS_ENTRY}
+                                                            dispatch={dispatch}
+                                                            name={fieldName}
+                                                            icon='fas fa-plus'
+                                                            btnColor='blue'
+                                                            isInput={true}/>
+                                                    </div>
+                                                )
+
+                                                const listFields = (
+                                                    <div className="listGroupEditChildren">
+                                                        {details[fieldName]
+                                                            .value
+                                                            .map((value, i) => (<BtnEditField
                                                                 profileEditId={profileEditId}
-                                                                actionType={ADD_DETAILS_ENTRY}
+                                                                actionType={REMOVE_DETAILS_ENTRY}
                                                                 dispatch={dispatch}
-                                                                name={fieldName}
-                                                                icon='fas fa-plus'
-                                                                btnColor='blue'
-                                                                isInput={true}/>
-                                                        </div>
-                                                        <div className="listGroupEditChildren">
-                                                            {details[fieldName]
-                                                                .value
-                                                                .map((value, i) => (<BtnEditField
-                                                                    profileEditId={profileEditId}
-                                                                    actionType={REMOVE_DETAILS_ENTRY}
-                                                                    dispatch={dispatch}
-                                                                    index={index}
-                                                                    reference={fieldName}
-                                                                    detailsName={details[fieldName].name}
-                                                                    key={i}
-                                                                    icon='fas fa-minus'
-                                                                    btnColor='red'
-                                                                    item={value}/>))}
+                                                                index={index}
+                                                                reference={fieldName}
+                                                                detailsName={details[fieldName].name}
+                                                                key={getKey()}
+                                                                icon='fas fa-minus'
+                                                                btnColor='red'
+                                                                item={value}/>))}
+                                                    </div>
+                                                )
+
+                                                return (
+                                                    <React.Fragment key={getKey()}>
+                                                        <Heading heading={details[fieldName].name}/>
+                                                        <div>
+                                                            {inputField}
+                                                            {listFields}
                                                         </div>
                                                     </React.Fragment>
                                                 )
                                             })}
                                         </div>
+                                        {/* end: listGroupEdit */}
 
                                     </div>
-
-                                    <AddField/>
+                                    {/* end: topRightEditLiner */}
 
                                 </div>
+                                {/* end: topRightEdit */}
 
                             </div>
+                            {/* end: top */}
 
                         </div>
                     )

@@ -3,8 +3,10 @@ import React, {Component} from 'react';
 class List extends Component {
     render() {
         
-        const {heading, list} = this.props;
-
+        let {heading, list} = this.props;
+        //set the list to n/a if none was set
+        list = (list && list.length > 0) ? list : ["N/A"];
+        
         return (
             <div className="listGroup">
                 <p className="listHeading">{heading}</p>

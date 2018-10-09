@@ -5,31 +5,44 @@ import {SEARCHED_PROFILES} from '../store/actions.js'
 import {isMatchingString, getSearchValues, isInArray} from "../util/methods";
 
 class SearchBar extends Component {
+    state = {}
+    onChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
+    }
     render() {
-
         const search = (profiles, dispatch, e) => {
-            const matchingProfiles = [];
-            const values = getSearchValues(e);
-            values.forEach(word => {
-                profiles.forEach(data => {
-                    const {id} = data;
-                    const dataKeys = Object.keys(data.details);
-                    dataKeys.forEach(key => {
-                        if (matchingProfiles.includes(id)) {
-                            return null
-                        }
-                        const isString = (typeof data.details[key].value === "string");
-                        const isMatch = (isString)
-                            ? isMatchingString(data.details[key].value, word)
-                            : isInArray(data.details[key].value, word);
-                        if (isMatch) {
-                            matchingProfiles.push(id);
-                        }
-                    })
-                });
+            setTimeout(() => {
+                const matchingProfiles = [];
+                const values = getSearchValues(this.state.search);
+                values.forEach(word => {
+                    profiles.forEach(data => {
+                        const {id} = data;
+                        const dataKeys = Object.keys(data.details);
+                        dataKeys.forEach(key => {
+                            if (matchingProfiles.includes(id)) {
+                                return null
+                            }
+                            data.details[key].value = (typeof data.details[key].value === "number")
+                                ? data
+                                    .details[key]
+                                    .value
+                                    .toString()
+                                : data.details[key].value;
+                            const isString = (typeof data.details[key].value === "string");
+                            const isMatch = (isString)
+                                ? isMatchingString(data.details[key].value, word)
+                                : isInArray(data.details[key].value, word);
+                            if (isMatch) {
+                                matchingProfiles.push(id);
+                            }
+                        })
+                    });
+                })
+                const matchedProfilesData = profiles.filter(profile => matchingProfiles.includes(profile.id));
+                dispatch({type: SEARCHED_PROFILES, payload: matchedProfilesData})
             })
-            const matchedProfilesData = profiles.filter(profile => matchingProfiles.includes(profile.id));
-            dispatch({type: SEARCHED_PROFILES, payload: matchedProfilesData})
         }
 
         return (
@@ -39,8 +52,12 @@ class SearchBar extends Component {
                     return (
                         <div
                             className="searchBar flexRow"
-                            onKeyPress={search.bind(this, profiles, dispatch)}>
-                            <input placeholder="search..."/>
+                            onKeyDown={search.bind(this, profiles, dispatch)}>
+                            <input
+                                name="search"
+                                placeholder="search..."
+                                value={this.state.search}
+                                onChange={this.onChange}/>
                             <div className="searchBtn flexRow">
                                 <i className="fas fa-search"></i>
                             </div>

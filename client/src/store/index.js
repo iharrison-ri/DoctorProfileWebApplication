@@ -10,24 +10,29 @@ import {
     TOGGLE_SLIDER,
     DOCTOR_SELECTED,
     SEARCHED_PROFILES,
-    POPULATE_UI
+    POPULATE_UI,
+    EDIT_PROFILE,
+    SAVE_PROFILE
 } from './actions.js';
 
-// calculate the age given the year function getAge( dateString ) {     var
-// today = new Date();     var birthDate = new Date(dateString);     var age =
-// today.getFullYear() - birthDate.getFullYear();     var m = today.getMonth() -
-// birthDate.getMonth();     if (m < 0 || (m === 0 && today.getDate() <
-// birthDate.getDate())) {         age--;     }     return age; }
+import {getIndex} from "../util/methods";
 
 const Context = React.createContext();
 
 const reducer = (state, action) => {
+    let newProfiles;
+    let index;
     switch (action.type) {
         case POPULATE_UI:
-            return state
+            return {
+                ...state,
+                loadComplete: true,
+                profiles: [...action.payload]
+            }
         case EDIT_NAME:
-            const newProfiles = [...state.profiles];
-            newProfiles[state.profileEditId].details[action.payload.fieldName].value = action
+            newProfiles = [...state.profiles];
+            index = getIndex(newProfiles, state.profileEditId);
+            newProfiles[index].details[action.payload.fieldName].value = action
                 .payload
                 .value
                 .trim();
@@ -37,63 +42,68 @@ const reducer = (state, action) => {
                 profiles: newProfiles
             }
         case TOGGLE_NAME_EDITOR:
-            const newProfiles6 = [...state.profiles];
-            newProfiles6[state.profileEditId].details[action.payload].edit = !newProfiles6[state.profileEditId].details[action.payload].edit;
+            newProfiles = [...state.profiles];
+            index = getIndex(newProfiles, state.profileEditId);
+            newProfiles[index].details[action.payload].edit = !newProfiles[index].details[action.payload].edit;
             return {
                 ...state,
-                profiles: [...newProfiles6]
+                profiles: [...newProfiles]
             }
         case EDIT_DROPDOWN:
-            const newProfiles1 = [...state.profiles];
+            newProfiles = [...state.profiles];
             const keys = Object.keys(action.payload);
-            newProfiles1[state.profileEditId].details[keys[0]].value = action.payload[keys[0]];
+            index = getIndex(newProfiles, state.profileEditId);
+            newProfiles[index].details[keys[0]].value = action.payload[keys[0]];
             return {
                 ...state,
-                profiles: [...newProfiles1]
+                profiles: [...newProfiles]
             }
         case ADD_DETAILS_ENTRY:
-            const newProfiles2 = [...state.profiles];
-            newProfiles2[state.profileEditId]
+            newProfiles = [...state.profiles];
+            index = getIndex(newProfiles, state.profileEditId);
+            newProfiles[index]
                 .details[action.payload.ref]
                 .value
                 .unshift(action.payload.value.trim());
             return {
                 ...state,
-                profiles: newProfiles2
+                profiles: newProfiles
             }
         case REMOVE_DETAILS_ENTRY:
-            const newProfiles3 = [...state.profiles];
-            newProfiles3[state.profileEditId].details[action.payload.ref].value = state
-                .profiles[action.payload.id]
+            newProfiles = [...state.profiles];
+            index = getIndex(newProfiles, state.profileEditId);
+            newProfiles[index].details[action.payload.ref].value = newProfiles[index]
                 .details[action.payload.ref]
                 .value
                 .filter(data => data !== action.payload.item);
             return {
                 ...state,
-                profiles: newProfiles3
+                profiles: newProfiles
             }
         case SET_RANGE:
-            const newProfiles4 = [...state.profiles];
-            const { high, low } = action.payload;
-            newProfiles4[state.profileEditId].details[action.payload.field].sliderValues.low = action.payload.low;
-            newProfiles4[state.profileEditId].details[action.payload.field].sliderValues.high = action.payload.high;
+            newProfiles = [...state.profiles];
+            index = getIndex(newProfiles, state.profileEditId);
+            const {high, low} = action.payload;
+            newProfiles[index].details[action.payload.field].sliderValues.low = action.payload.low;
+            newProfiles[index].details[action.payload.field].sliderValues.high = action.payload.high;
 
-            newProfiles4[state.profileEditId].details[action.payload.field].value = (action.payload.low === action.payload.high)
+            newProfiles[index].details[action.payload.field].value = (action.payload.low === action.payload.high)
                 ? action.payload.low
                 : ((high === 100 || high === "100") && (high !== low))
-                ? `${low}+`
-                : `${low} - ${high}`;
+                    ? `${low}+`
+                    : `${low} - ${high}`;
             return {
                 ...state,
-                profiles: newProfiles4
+                profiles: newProfiles
             }
         case TOGGLE_SLIDER:
-            const newProfiles5 = [...state.profiles]
-            const currentBool = newProfiles5[action.payload.index].details[action.payload.field].showSlider;
-            newProfiles5[state.profileEditId].details[action.payload.field].showSlider = !currentBool;
+            newProfiles = [...state.profiles];
+            index = getIndex(newProfiles, state.profileEditId);
+            const currentBool = newProfiles[action.payload.index].details[action.payload.field].showSlider;
+            newProfiles[index].details[action.payload.field].showSlider = !currentBool;
             return {
                 ...state,
-                profiles: newProfiles5
+                profiles: newProfiles
             }
         case DOCTOR_SELECTED:
             return {
@@ -105,6 +115,13 @@ const reducer = (state, action) => {
                 ...state,
                 matchedProfilesData: action.payload
             }
+        case EDIT_PROFILE:
+        debugger
+        index = getIndex(state.profiles, state.profileEditId);
+        debugger
+            return state
+        case SAVE_PROFILE:
+            return state
         default:
             return state
     }
@@ -113,6 +130,7 @@ const reducer = (state, action) => {
 export class Provider extends Component {
 
     state = {
+        loadComplete: false,
         editName: false,
         inputRefs: {},
         profileEditId: 0,
@@ -134,593 +152,8 @@ export class Provider extends Component {
                 text: "Back To Search"
             }
         },
-        profiles: [
-            {
-                id: 0,
-                img: "./img/doctor1.png",
-                excludedInRightSideColumn: [
-                    "expertise",
-                    "surgicalLocations",
-                    "officeLocations",
-                    "name",
-                    "suffix",
-                    "apmAbbrev",
-                    "partnerStatus",
-                    "dob",
-                    "age"
-                ],
-                details: {
-                    name: {
-                        name: "name",
-                        value: "Kris C. Dodson",
-                        isTextEdit: true
-                    },
-                    suffix: {
-                        name: "suffix",
-                        value: "MD",
-                        isTextEdit: true
-                    },
-                    apmAbbrev: {
-                        name: "APM Abbrev",
-                        value: "CDOD",
-                        isTextEdit: true
-                    },
-                    partnerStatus: {
-                        name: "Partner Status",
-                        value: "Partner",
-                        options: [
-                            "Partner", "Associate"
-                        ]
-                    },
-                    dob: {
-                        name: "Date of birth",
-                        value: "3/11/1977",
-                        isTextEdit: true
-                    },
-                    age: {
-                        name: "Age",
-                        value: "41",
-                        isTextEdit: true
-                    },
-                    patientAgeRange: {
-                        name: 'Patient Age Range',
-                        value: "12+",
-                        hasSlider: true,
-                        sliderValues: {
-                            low: 12,
-                            high: 100
-                        }
-                    },
-                    expertise: {
-                        name: 'Expertise',
-                        value: [
-                            "AC Joint Seperation",
-                            "Achilles Tendon Rupture",
-                            "ACL",
-                            "Athletic Injuries",
-                            "Distal Bicep Tendon Tear/Rupture",
-                            "Distal Tricep Tear",
-                            "Elbow Epicondylitis",
-                            "Elbow Lateral Ligament Tear",
-                            "Exertional Compartment Syndrome",
-                            "Hamstring Tear/Rupture",
-                            "Loose Bodies",
-                            "Loose Bodies in Elbow",
-                            "Medial Meniscus Tear",
-                            "Patellar Fracture",
-                            "Pectoralis Major Rupture",
-                            "Quad Tear/Rupture",
-                            "Rotator Cuff Repair",
-                            "Shoulder Dislocation",
-                            "Shoulder Fracture",
-                            "Shoulder Impingement",
-                            "Shoulder Labrum Tear",
-                            "Tommy John Surgery",
-                            "Total Shoulder Replacement"
-                        ],
-                        isList: true
-                    },
-                    patientExceptions: {
-                        name: 'Patient Exceptions',
-                        value: [
-                            "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements"
-                        ],
-                        isList: true
-                    },
-                    officeLocations: {
-                        name: 'Office Locations',
-                        value: [
-                            "Center City", "Bryn Mawr"
-                        ],
-                        isList: true
-                    },
-                    surgicalLocations: {
-                        name: 'Surgical Locations',
-                        value: [
-                            "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center"
-                        ],
-                        isList: true
-                    },
-                    workComp: {
-                        name: 'Work Comp',
-                        value: "Yes",
-                        options: [
-                            "Yes", "No"
-                        ]
-                    },
-                    auto: {
-                        name: 'Auto',
-                        value: "Yes",
-                        options: [
-                            "Yes", "No"
-                        ]
-                    },
-                    acuteInjuries: {
-                        name: 'Acute Injuries',
-                        value: "Yes",
-                        options: [
-                            "Yes", "No"
-                        ]
-                    }
-                }
-            }, {
-                id: 1,
-                img: "./img/doctor2.png",
-                excludedInRightSideColumn: [
-                    "expertise",
-                    "surgicalLocations",
-                    "officeLocations",
-                    "name",
-                    "suffix",
-                    "apmAbbrev",
-                    "isPartner",
-                    "dob",
-                    "age"
-                ],
-                details: {
-                    name: {
-                        name: "name",
-                        value: "Sarah G. Patterson",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    suffix: {
-                        name: "suffix",
-                        value: "MD",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    apmAbbrev: {
-                        name: "APM Abbrev",
-                        value: "CDOD",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    partnerStatus: {
-                        name: "Partner Status",
-                        value: "Partner",
-                        options: [
-                            "Partner", "Associate"
-                        ],
-                        isList: false,
-                        hasSlider: false
-                    },
-                    dob: {
-                        name: "Date of birth",
-                        value: "3/11/1977",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    age: {
-                        name: "Age",
-                        value: "41",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    patientAgeRange: {
-                        name: 'Patient Age Range',
-                        value: "12+",
-                        isList: false,
-                        hasSlider: true,
-                        sliderValues: {
-                            low: 12,
-                            high: 100
-                        },
-                        showSlider: false
-                    },
-                    expertise: {
-                        name: 'Expertise',
-                        value: [
-                            "AC Joint Seperation",
-                            "Achilles Tendon Rupture",
-                            "ACL",
-                            "Athletic Injuries",
-                            "Distal Bicep Tendon Tear/Rupture",
-                            "Distal Tricep Tear",
-                            "Elbow Epicondylitis",
-                            "Elbow Lateral Ligament Tear",
-                            "Exertional Compartment Syndrome",
-                            "Hamstring Tear/Rupture",
-                            "Loose Bodies",
-                            "Loose Bodies in Elbow",
-                            "Medial Meniscus Tear",
-                            "Patellar Fracture",
-                            "Pectoralis Major Rupture",
-                            "Quad Tear/Rupture",
-                            "Rotator Cuff Repair",
-                            "Shoulder Dislocation",
-                            "Shoulder Fracture",
-                            "Shoulder Impingement",
-                            "Shoulder Labrum Tear",
-                            "Tommy John Surgery",
-                            "Total Shoulder Replacement"
-                        ],
-                        isList: true,
-                        hasSlider: false
-                    },
-                    patientExceptions: {
-                        name: 'Patient Exceptions',
-                        value: [
-                            "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements"
-                        ],
-                        isList: true,
-                        hasSlider: false
-                    },
-                    officeLocations: {
-                        name: 'Office Locations',
-                        value: [
-                            "Center City", "Bryn Mawr"
-                        ],
-                        isList: true,
-                        hasSlider: false
-                    },
-                    surgicalLocations: {
-                        name: 'Surgical Locations',
-                        value: [
-                            "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center"
-                        ],
-                        isList: true,
-                        hasSlider: false
-                    },
-                    workComp: {
-                        name: 'Work Comp',
-                        value: "Yes",
-                        options: [
-                            "Yes", "No"
-                        ],
-                        isList: false,
-                        hasSlider: false
-                    },
-                    auto: {
-                        name: 'Auto',
-                        value: "Yes",
-                        options: [
-                            "Yes", "No"
-                        ],
-                        isList: false,
-                        hasSlider: false
-                    },
-                    acuteInjuries: {
-                        name: 'Acute Injuries',
-                        value: "Yes",
-                        options: [
-                            "Yes", "No"
-                        ],
-                        isList: false,
-                        hasSlider: false
-                    }
-                }
-            }, {
-                id: 2,
-                img: "./img/doctor3.png",
-                excludedInRightSideColumn: [
-                    "expertise",
-                    "surgicalLocations",
-                    "officeLocations",
-                    "name",
-                    "suffix",
-                    "apmAbbrev",
-                    "isPartner",
-                    "dob",
-                    "age"
-                ],
-                details: {
-                    name: {
-                        name: "name",
-                        value: "Anthany W. Rivers",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    suffix: {
-                        name: "suffix",
-                        value: "MD",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    apmAbbrev: {
-                        name: "APM Abbrev",
-                        value: "CDOD",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    partnerStatus: {
-                        name: "Partner Status",
-                        value: "Partner",
-                        options: [
-                            "Partner", "Associate"
-                        ],
-                        isList: false,
-                        hasSlider: false
-                    },
-                    dob: {
-                        name: "Date of birth",
-                        value: "3/11/1977",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    age: {
-                        name: "Age",
-                        value: "41",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    patientAgeRange: {
-                        name: 'Patient Age Range',
-                        value: "12+",
-                        isList: false,
-                        hasSlider: true,
-                        sliderValues: {
-                            low: 12,
-                            high: 100
-                        },
-                        showSlider: false
-                    },
-                    expertise: {
-                        name: 'Expertise',
-                        value: [
-                            "AC Joint Seperation",
-                            "Achilles Tendon Rupture",
-                            "ACL",
-                            "Athletic Injuries",
-                            "Distal Bicep Tendon Tear/Rupture",
-                            "Distal Tricep Tear",
-                            "Elbow Epicondylitis",
-                            "Elbow Lateral Ligament Tear",
-                            "Exertional Compartment Syndrome",
-                            "Hamstring Tear/Rupture",
-                            "Loose Bodies",
-                            "Loose Bodies in Elbow",
-                            "Medial Meniscus Tear",
-                            "Patellar Fracture",
-                            "Pectoralis Major Rupture",
-                            "Quad Tear/Rupture",
-                            "Rotator Cuff Repair",
-                            "Shoulder Dislocation",
-                            "Shoulder Fracture",
-                            "Shoulder Impingement",
-                            "Shoulder Labrum Tear",
-                            "Tommy John Surgery",
-                            "Total Shoulder Replacement"
-                        ],
-                        isList: true,
-                        hasSlider: false
-                    },
-                    patientExceptions: {
-                        name: 'Patient Exceptions',
-                        value: [
-                            "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements"
-                        ],
-                        isList: true,
-                        hasSlider: false
-                    },
-                    officeLocations: {
-                        name: 'Office Locations',
-                        value: [
-                            "Center City", "Bryn Mawr"
-                        ],
-                        isList: true,
-                        hasSlider: false
-                    },
-                    surgicalLocations: {
-                        name: 'Surgical Locations',
-                        value: [
-                            "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center"
-                        ],
-                        isList: true,
-                        hasSlider: false
-                    },
-                    workComp: {
-                        name: 'Work Comp',
-                        value: "Yes",
-                        options: [
-                            "Yes", "No"
-                        ],
-                        isList: false,
-                        hasSlider: false
-                    },
-                    auto: {
-                        name: 'Auto',
-                        value: "Yes",
-                        options: [
-                            "Yes", "No"
-                        ],
-                        isList: false,
-                        hasSlider: false
-                    },
-                    acuteInjuries: {
-                        name: 'Acute Injuries',
-                        value: "Yes",
-                        options: [
-                            "Yes", "No"
-                        ],
-                        isList: false,
-                        hasSlider: false
-                    }
-                }
-            }, {
-                id: 3,
-                img: "./img/doctor4.png",
-                excludedInRightSideColumn: [
-                    "expertise",
-                    "surgicalLocations",
-                    "officeLocations",
-                    "name",
-                    "suffix",
-                    "apmAbbrev",
-                    "isPartner",
-                    "dob",
-                    "age"
-                ],
-                details: {
-                    name: {
-                        name: "name",
-                        value: "Pam B. Jones",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    suffix: {
-                        name: "suffix",
-                        value: "MD",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    apmAbbrev: {
-                        name: "APM Abbrev",
-                        value: "CDOD",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    partnerStatus: {
-                        name: "Partner Status",
-                        value: "Partner",
-                        options: [
-                            "Partner", "Associate"
-                        ],
-                        isList: false,
-                        hasSlider: false
-                    },
-                    dob: {
-                        name: "Date of birth",
-                        value: "3/11/1977",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    age: {
-                        name: "Age",
-                        value: "41",
-                        isTextEdit: true,
-                        isList: false,
-                        hasSlider: false
-                    },
-                    patientAgeRange: {
-                        name: 'Patient Age Range',
-                        value: "12+",
-                        isList: false,
-                        hasSlider: true,
-                        sliderValues: {
-                            low: 12,
-                            high: 100
-                        },
-                        showSlider: false
-                    },
-                    expertise: {
-                        name: 'Expertise',
-                        value: [
-                            "AC Joint Seperation",
-                            "Achilles Tendon Rupture",
-                            "ACL",
-                            "Athletic Injuries",
-                            "Distal Bicep Tendon Tear/Rupture",
-                            "Distal Tricep Tear",
-                            "Elbow Epicondylitis",
-                            "Elbow Lateral Ligament Tear",
-                            "Exertional Compartment Syndrome",
-                            "Hamstring Tear/Rupture",
-                            "Loose Bodies",
-                            "Loose Bodies in Elbow",
-                            "Medial Meniscus Tear",
-                            "Patellar Fracture",
-                            "Pectoralis Major Rupture",
-                            "Quad Tear/Rupture",
-                            "Rotator Cuff Repair",
-                            "Shoulder Dislocation",
-                            "Shoulder Fracture",
-                            "Shoulder Impingement",
-                            "Shoulder Labrum Tear",
-                            "Tommy John Surgery",
-                            "Total Shoulder Replacement"
-                        ],
-                        isList: true,
-                        hasSlider: false
-                    },
-                    patientExceptions: {
-                        name: 'Patient Exceptions',
-                        value: [
-                            "NO Tibial Plateau Fractures", "NO Patella Fractures", "NO Elbow Fractures", "NO Elbow Replacements", "NO Knee Replacements"
-                        ],
-                        isList: true,
-                        hasSlider: false
-                    },
-                    officeLocations: {
-                        name: 'Office Locations',
-                        value: [
-                            "Center City", "Bryn Mawr"
-                        ],
-                        isList: true,
-                        hasSlider: false
-                    },
-                    surgicalLocations: {
-                        name: 'Surgical Locations',
-                        value: [
-                            "Bryn Mawr Hospital", "Vincera Surgery Center", "Riverview Surgical Center", "Brynmawr Surgical Center"
-                        ],
-                        isList: true,
-                        hasSlider: false
-                    },
-                    workComp: {
-                        name: 'Work Comp',
-                        value: "Yes",
-                        options: [
-                            "Yes", "No"
-                        ],
-                        isList: false,
-                        hasSlider: false
-                    },
-                    auto: {
-                        name: 'Auto',
-                        value: "Yes",
-                        options: [
-                            "Yes", "No"
-                        ],
-                        isList: false,
-                        hasSlider: false
-                    },
-                    acuteInjuries: {
-                        name: 'Acute Injuries',
-                        value: "Yes",
-                        options: [
-                            "Yes", "No"
-                        ],
-                        isList: false,
-                        hasSlider: false
-                    }
-                }
-            }
-        ],
+        profiles: [],
+        editingProfile: {},
         dispatch: (action) => this.setState(state => reducer(state, action))
     }
 
