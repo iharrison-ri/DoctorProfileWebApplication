@@ -1,28 +1,15 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-//bring in axios to make requests
-import axios from "axios";
 
-import {DOCTOR_SELECTED, POPULATE_UI} from "../store/actions.js";
-import {extractProfileData} from "../util/methods";
+import {DOCTOR_SELECTED} from "../store/actions.js";
 
 import {Consumer} from "../store";
 import SearchBar from "./SearchBar";
 import ProfileTop from "./ProfileTop";
 
+import {goToLoadingScreen} from "../util/methods";
+
 class Search extends Component {
-    componentDidMount() {
-        //make call for all records in the DB
-        axios
-            .get("/allrecords")
-            .then(data => {
-                const appState = extractProfileData(data.data);
-                this.globalDispatch({type: POPULATE_UI, payload: appState})
-            })
-    }
-
-    globalDispatch;
-
     render() {
 
         // style to each doctor profile card that is only applied on the search screen
@@ -38,11 +25,13 @@ class Search extends Component {
         return (
             <Consumer>
                 {value => {
+                    (value.profiles.length === 0) ? goToLoadingScreen() : null;
+
                     const {profiles, dispatch, linkInfo, matchedProfilesData} = value;
                     const displayProfiles = (matchedProfilesData && matchedProfilesData.length > 0)
                         ? matchedProfilesData
                         : profiles;
-                    this.globalDispatch = dispatch;
+                    
                     return (
                         <React.Fragment>
 

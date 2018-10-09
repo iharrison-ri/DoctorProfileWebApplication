@@ -66,6 +66,7 @@ body {
 }
 
 a {
+    color: var(--textColor);
     text-decoration: none;
 }
 
@@ -147,6 +148,25 @@ select {
 
 /* nav bar */
 .navBar {}
+
+/* loding */
+.loading {
+    perspective: 252px;
+}
+
+.loading > img {
+    height: 30em;
+    transition: all 0.5s;
+    opacity: 0.1;
+}
+
+.loading > img.rotateRight {
+    transform: rotateY(40deg)
+}
+
+.loading > img.rotateLeft {
+    transform: rotateY(-40deg)
+}
 
 /* top */
 .top {
@@ -670,6 +690,11 @@ option:hover {
 
 .searchProfile .top {
     transition: all 0.5s;
+}
+
+/* -webkit-transform removes the css flickering when using the transform scale on the img */
+img {
+    -webkit-transform: translate3d(0, 0, 0);
 }
 
 .doctorImage img {

@@ -34,7 +34,7 @@ class ProfileBottom extends Component {
                                 <div className="bottomLeftSection">
 
                                     {contactInfoKeys.map((data, index) => {
-                                        return (contactInfo[data] === null || contactInfo[data] === undefined)
+                                        return (contactInfo[data] === null || contactInfo[data] === undefined || data.toUpperCase().includes("ID"))
                                             ? null
                                             : <List key={index} heading={data} list={[contactInfo[data]]}/>
                                     })}

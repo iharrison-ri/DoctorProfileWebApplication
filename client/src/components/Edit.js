@@ -6,6 +6,8 @@ import BtnEditField from './BtnEditField';
 import ProfileImg from './ProfileImg';
 import Heading from './Heading';
 
+import {goToLoadingScreen, getKey} from "../util/methods";
+
 // actions
 import {EDIT_NAME, ADD_DETAILS_ENTRY, REMOVE_DETAILS_ENTRY, TOGGLE_NAME_EDITOR} from '../store/actions.js';
 
@@ -14,9 +16,11 @@ class Edit extends Component {
         return (
             <Consumer>
                 {value => {
+                    (value.profiles.length === 0) ? goToLoadingScreen() : null;
 
                     const {profiles, dispatch, profileEditId, linkInfo} = value;
-                    const {details, img} = profiles[profileEditId];
+                    const currentProfile = profiles.filter(profile => profile.id === profileEditId);
+                    const {details, img} = currentProfile[0];
                     const detailsObjKeys = Object.keys(details);
                     const pecilEditFields = detailsObjKeys.filter(data => details[data].isTextEdit && data !== "age");
                     const listEditFields = detailsObjKeys.filter(data => details[data].isList);
@@ -44,9 +48,9 @@ class Edit extends Component {
                                                 const {value, edit} = details[fieldName];
 
                                                 const plusBtnField = (
-                                                    <div key={index} className="editSection flexRow">
+                                                    <div key={getKey()} className="editSection flexRow">
                                                         <BtnEditField
-                                                            key={index + "plus"}
+                                                            key={getKey()}
                                                             data={index}
                                                             profileEditId={profileEditId}
                                                             id='nameField'
@@ -61,7 +65,7 @@ class Edit extends Component {
                                                 );
 
                                                 const pencilBtnField = (<BtnEditField
-                                                    key={index + "pencil"}
+                                                    key={getKey()}
                                                     profileEditId={profileEditId}
                                                     actionType={TOGGLE_NAME_EDITOR}
                                                     dispatch={dispatch}
@@ -71,8 +75,8 @@ class Edit extends Component {
                                                     fieldName={fieldName}/>);
 
                                                 return (
-                                                    <React.Fragment key={index}>
-                                                        <Heading key={index} heading={details[fieldName].name}/> {edit
+                                                    <React.Fragment key={getKey()}>
+                                                        <Heading key={getKey()} heading={details[fieldName].name}/> {edit
                                                             ? plusBtnField
                                                             : pencilBtnField}
                                                     </React.Fragment>
@@ -109,7 +113,7 @@ class Edit extends Component {
                                                                 index={index}
                                                                 reference={fieldName}
                                                                 detailsName={details[fieldName].name}
-                                                                key={i}
+                                                                key={getKey()}
                                                                 icon='fas fa-minus'
                                                                 btnColor='red'
                                                                 item={value}/>))}
@@ -117,7 +121,7 @@ class Edit extends Component {
                                                 )
 
                                                 return (
-                                                    <React.Fragment key={index}>
+                                                    <React.Fragment key={getKey()}>
                                                         <Heading heading={details[fieldName].name}/>
                                                         <div>
                                                             {inputField}

@@ -2,6 +2,8 @@ import moment from "moment";
 
 import {EDIT_NAME, ADD_DETAILS_ENTRY, REMOVE_DETAILS_ENTRY, EDIT_DROPDOWN, TOGGLE_NAME_EDITOR} from "../store/actions";
 
+import uuid from 'uuid';
+
 // middleware for the dispatch in the context
 export const update = (params, e) => {
     // the payload to be deployed
@@ -162,9 +164,11 @@ export const isMatchingString = (comparer, word) => {
         .includes(word.toUpperCase())
 }
 
-export const getSearchValues = (event) => {
-    const values = event.target.value
-    return values
+export const getSearchValues = (value) => {
+    value = (value)
+        ? value
+        : "";
+    return value
         .trim()
         .split(" ")
         .filter(data => data !== "")
@@ -205,6 +209,13 @@ export const mapProfileIdToField = (id, fields, mapper, idName) => {
         .filter(data => fieldId.includes(data.Id))
         .map(data => data.Name || data.RestrictionName);
     return fieldArr;
+}
+
+export const convertNullToEmpytArray = (obj) => {
+    const keys = Object.keys(obj);
+    keys.forEach(data => {
+        obj[data].value = obj[data].value || [];
+    })
 }
 
 export const getProfileDetails = (data, profileTablesObject, profileTableMappersObject) => {
@@ -284,6 +295,8 @@ export const getProfileDetails = (data, profileTablesObject, profileTableMappers
             isList: true
         }
     }
+
+    convertNullToEmpytArray(detailsObj);
 
     return detailsObj;
 }
@@ -403,4 +416,24 @@ export const formatPhoneNumber = (obj) => {
     }
     delete obj["Phone1"];
     delete obj["Phone2"];
+}
+
+export const goToLoadingScreen = () => {
+    window.location.href = "/";
+}
+
+export const getIndex = (profiles, id, detailsKey, field, value) => {
+    let index;
+    for (let i = 0; i < profiles.length; i++) {
+        const currentProfile = profiles[i];
+        if (currentProfile.id === id) {
+            index = i;
+            break;
+        }
+    }
+    return index;
+}
+
+export const getKey = () => {
+    return uuid();
 }

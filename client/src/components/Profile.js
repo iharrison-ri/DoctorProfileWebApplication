@@ -11,14 +11,15 @@ class Profile extends Component {
             <Consumer>
                 {value => {
                     const {profiles, linkInfo, profileEditId} = value;
+                    const currentProfile = profiles.filter(profile => profile.id === profileEditId);
                     return (
                         <React.Fragment>
                             <div className="navholder flexRow">
                                 <NavBtn link={linkInfo.edit.url} text={linkInfo.edit.text}/>
                                 <NavBtn link={linkInfo.search.url} text={linkInfo.search.text}/>
                             </div>
-                            <ProfileTop profile={profiles[profileEditId]}/>
-                            <ProfileBottom profile={profiles[profileEditId]}/>
+                            <ProfileTop profile={currentProfile[0]}/>
+                            <ProfileBottom profile={currentProfile[0]}/>
                         </React.Fragment>
                     )
                 }}
