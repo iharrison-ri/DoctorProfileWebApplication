@@ -149,6 +149,11 @@ select {
 /* nav bar */
 .navBar {}
 
+/* error page */
+.errorIcon {
+    font-size: 26em;
+}
+
 /* loding */
 .loading {
     perspective: 252px;
@@ -180,6 +185,10 @@ select {
 .navholder {
     width: 80%;
     margin: 1em auto 0;
+}
+
+.navholder  > div {
+    margin: 1em;
 }
 
 .editProfileBtn {
@@ -234,6 +243,10 @@ select {
     font-size: 2.4em;
     font-weight: 600;
     margin: 0;
+}
+
+.missingImgIcon {
+    font-size: 14em;
 }
 
 /* topRightTop */

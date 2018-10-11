@@ -244,6 +244,8 @@ export const getProfileDetails = (data, profileTablesObject, profileTableMappers
     } = profileTableMappersObject;
 
     const detailsObj = {
+        contactInfo: getProfileContacts(data, profileTablesObject),
+        notes: getProfileNotes(data, profileTablesObject),
         age: {
             name: "Age",
             value: getAge(DOB),
@@ -331,6 +333,24 @@ export const getExcludedRightColumn = () => {
     ]
 }
 
+export const manualChangefields = ["ContactInfo", "Profiles", "Speciality"];
+export const fieldToArray = {};
+
+export const extractAllDatabaseData = (data) => {
+    const dataKeys = Object.keys(data);
+    const ecludedFields = ["ContactTypes", "ExpertiseTypes"];
+    dataKeys.forEach(field => {
+        if (!manualChangefields.includes(field) && !ecludedFields.includes(field) && !field.includes("ProfileTo")) {
+            fieldToArray[field] = [];
+            data[field].map(data => {
+                const index = parseInt(data["Id"]);
+                fieldToArray[field][index] = data["Name"] || data["Notes"] || data["RestrictionName"];
+            })
+        };
+
+    })
+}
+
 export const extractProfileData = (data) => {
     const recordKeys = Object.keys(data);
     const profileTableMappersArray = recordKeys.filter(data => data.includes("ProfileTo"));
@@ -347,9 +367,7 @@ export const extractProfileData = (data) => {
             id: data.Id,
             img: data.ImageLocation,
             details: getProfileDetails(data, profileTablesObject, profileTableMappersObject),
-            excludedInRightSideColumn: getExcludedRightColumn(),
-            contactInfo: getProfileContacts(data, profileTablesObject),
-            notes: getProfileNotes(data, profileTablesObject)
+            excludedInRightSideColumn: getExcludedRightColumn()
         });
     })
     // debugger
@@ -436,4 +454,19 @@ export const getIndex = (profiles, id, detailsKey, field, value) => {
 
 export const getKey = () => {
     return uuid();
+}
+
+export const getEditedFields = (editingProfile, action) => {
+    let fieldsThatHaveBennEdited = [];
+    if (editingProfile.editedFields) {
+        if (!editingProfile.editedFields.includes(action.payload.fieldName)) {
+            fieldsThatHaveBennEdited = [...editingProfile.editedFields]
+            fieldsThatHaveBennEdited.push(action.payload.fieldName);
+        } else {
+            fieldsThatHaveBennEdited = [...editingProfile.editedFields]
+        }
+    } else {
+        fieldsThatHaveBennEdited.push(action.payload.fieldName);
+    }
+    return fieldsThatHaveBennEdited;
 }

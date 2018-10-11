@@ -11,25 +11,34 @@ class ProfileTop extends Component {
         return (
             <Consumer>
                 {value => {
-                    (value.profiles.length === 0) ? goToLoadingScreen() : null;
-                    
+                    (value.profiles.length === 0)
+                        ? goToLoadingScreen()
+                        : null;
+
                     let {img, details} = this.props.profile;
                     const style = this.props.addStlye;
                     const imgLocation = process.env.PUBLIC_URL + img;
                     const name = details.name.value;
-                    const suffix = details.suffix.value.join("/");
+                    const suffix = details
+                        .suffix
+                        .value
+                        .join("/");
                     const apmAbbrev = details.apmAbbrev.value;
                     const partnerStatus = details.partnerStatus.value;
                     const dob = details.dob.value;
                     const age = details.age.value;
                     const officeLocations = details.officeLocations.value;
                     const surgicalLocations = details.surgicalLocations.value;
-                    const nameDisplayed = (suffix) ? `${name}, ${suffix}` : name;
+                    const nameDisplayed = (suffix)
+                        ? `${name}, ${suffix}`
+                        : name;
 
                     return (
                         <div className="top flexRow" style={style}>
 
-                            <ProfileImg img={imgLocation}/>
+                            {img
+                                ? <ProfileImg img={imgLocation}/>
+                                : <i class="fas fa-user-md missingImgIcon"></i>}
 
                             <div className="topRight">
 
@@ -51,7 +60,7 @@ class ProfileTop extends Component {
                                 </div>
 
                                 <div className="topRightBottom flexRow">
-                                    <List heading={"Office Location"} list={officeLocations}/>
+                                    <List heading={"Office Locations"} list={officeLocations}/>
                                     <List heading={"Surgical Locations"} list={surgicalLocations}/>
                                 </div>
 

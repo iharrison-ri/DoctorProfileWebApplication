@@ -15,11 +15,13 @@ import {
     SAVE_PROFILE
 } from './actions.js';
 
-import {getIndex} from "../util/methods";
+import {getIndex, getEditedFields} from "../util/methods";
+import {saveProfile} from "../util/api";
 
 const Context = React.createContext();
 
 const reducer = (state, action) => {
+    console.log(action.type)
     let newProfiles;
     let index;
     switch (action.type) {
@@ -30,24 +32,25 @@ const reducer = (state, action) => {
                 profiles: [...action.payload]
             }
         case EDIT_NAME:
-            newProfiles = [...state.profiles];
-            index = getIndex(newProfiles, state.profileEditId);
-            newProfiles[index].details[action.payload.fieldName].value = action
+            newProfiles = JSON.parse(JSON.stringify({...state.editingProfile}));
+            newProfiles.details[action.payload.fieldName].value = action
                 .payload
                 .value
                 .trim();
+            const editedFields = getEditedFields(state.editingProfile, action);
             return {
                 ...state,
-                editName: !state.editName,
-                profiles: newProfiles
+                editingProfile: {
+                    ...newProfiles,
+                    editedFields: [...editedFields]
+                }
             }
         case TOGGLE_NAME_EDITOR:
-            newProfiles = [...state.profiles];
-            index = getIndex(newProfiles, state.profileEditId);
-            newProfiles[index].details[action.payload].edit = !newProfiles[index].details[action.payload].edit;
+            newProfiles = {...state.editingProfile};
+            newProfiles.details[action.payload].edit = !newProfiles.details[action.payload].edit;
             return {
                 ...state,
-                profiles: [...newProfiles]
+                editingProfile: {...newProfiles}
             }
         case EDIT_DROPDOWN:
             newProfiles = [...state.profiles];
@@ -67,7 +70,7 @@ const reducer = (state, action) => {
                 .unshift(action.payload.value.trim());
             return {
                 ...state,
-                profiles: newProfiles
+                profiles: [...newProfiles]
             }
         case REMOVE_DETAILS_ENTRY:
             newProfiles = [...state.profiles];
@@ -78,7 +81,7 @@ const reducer = (state, action) => {
                 .filter(data => data !== action.payload.item);
             return {
                 ...state,
-                profiles: newProfiles
+                profiles: [...newProfiles]
             }
         case SET_RANGE:
             newProfiles = [...state.profiles];
@@ -94,7 +97,7 @@ const reducer = (state, action) => {
                     : `${low} - ${high}`;
             return {
                 ...state,
-                profiles: newProfiles
+                profiles: [...newProfiles]
             }
         case TOGGLE_SLIDER:
             newProfiles = [...state.profiles];
@@ -103,7 +106,7 @@ const reducer = (state, action) => {
             newProfiles[index].details[action.payload.field].showSlider = !currentBool;
             return {
                 ...state,
-                profiles: newProfiles
+                profiles: [...newProfiles]
             }
         case DOCTOR_SELECTED:
             return {
@@ -116,12 +119,23 @@ const reducer = (state, action) => {
                 matchedProfilesData: action.payload
             }
         case EDIT_PROFILE:
-        debugger
-        index = getIndex(state.profiles, state.profileEditId);
-        debugger
-            return state
+            index = getIndex(state.profiles, state.profileEditId);
+            return {
+                ...state,
+                editingProfile: {
+                    ...state.profiles[index]
+                }
+            }
         case SAVE_PROFILE:
-            return state
+            newProfiles = [...state.profiles];
+            index = getIndex(newProfiles, state.profileEditId)
+            newProfiles[index] = {...state.editingProfile};
+            saveProfile(state.editingProfile);
+            return {
+                ...state,
+                editingProfile: {},
+                profiles: [...newProfiles]
+            }
         default:
             return state
     }
@@ -131,7 +145,6 @@ export class Provider extends Component {
 
     state = {
         loadComplete: false,
-        editName: false,
         inputRefs: {},
         profileEditId: 0,
         linkInfo: {
