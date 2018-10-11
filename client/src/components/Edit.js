@@ -7,6 +7,7 @@ import ProfileImg from './ProfileImg';
 import Heading from './Heading';
 
 import {goToLoadingScreen, getKey} from "../util/methods";
+import {SAVE_PROFILE} from '../store/actions';
 
 // actions
 import {EDIT_NAME, ADD_DETAILS_ENTRY, REMOVE_DETAILS_ENTRY, TOGGLE_NAME_EDITOR} from '../store/actions.js';
@@ -16,21 +17,29 @@ class Edit extends Component {
         return (
             <Consumer>
                 {value => {
-                    (value.profiles.length === 0) ? goToLoadingScreen() : null;
+                    (value.profiles.length === 0)
+                        ? goToLoadingScreen()
+                        : null;
 
-                    const {profiles, dispatch, profileEditId, linkInfo} = value;
-                    const currentProfile = profiles.filter(profile => profile.id === profileEditId);
-                    const {details, img} = currentProfile[0];
+                    const {dispatch, profileEditId, linkInfo, editingProfile} = value;
+                    const {details, img} = editingProfile;
                     const detailsObjKeys = Object.keys(details);
                     const pecilEditFields = detailsObjKeys.filter(data => details[data].isTextEdit && data !== "age");
                     const listEditFields = detailsObjKeys.filter(data => details[data].isList);
+                    const saveProfileClick = () => {
+                        dispatch({type: SAVE_PROFILE})
+                    }
 
                     return (
                         <div className="flexCol">
 
                             <div className="navholder flexRow">
-                                <NavBtn link={linkInfo.save.url} text={linkInfo.save.text}/>
-                                <NavBtn link={linkInfo.profile.url} text={linkInfo.profile.text}/>
+                                <div onClick={saveProfileClick}>
+                                    <NavBtn link={linkInfo.save.url} text={linkInfo.save.text}/>
+                                </div>
+                                <div>
+                                    <NavBtn link={linkInfo.profile.url} text={linkInfo.profile.text}/>
+                                </div>
                             </div>
 
                             <div className="top flexRow">

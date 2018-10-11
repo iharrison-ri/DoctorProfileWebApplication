@@ -4,17 +4,24 @@ import {Consumer} from '../store';
 import axios from "axios";
 
 import {POPULATE_UI} from "../store/actions.js";
-import {extractProfileData} from "../util/methods";
+import {extractProfileData, extractAllDatabaseData} from "../util/methods";
 
 class Loading extends Component {
+    state = {}
+
     componentDidMount() {
         //make call for all records in the DB
         axios
             .get("/allrecords")
             .then(data => {
+                extractAllDatabaseData(data.data);
                 const appState = extractProfileData(data.data);
                 this.globalDispatch({type: POPULATE_UI, payload: appState});
             })
+            .catch(err => {
+                console.log(err);
+                this.setState({hasLoadingErrors: true});
+            });
     }
 
     globalDispatch;
@@ -69,8 +76,19 @@ class Loading extends Component {
                     }, 600);
                     return (
                         <div className="loading flexCol fullSize">
-                            <img id="loadingImg" src={process.env.PUBLIC_URL + "./img/rothmanLoading.png"}/>
-                            <p>loading...</p>
+                            {(!this.state.hasLoadingErrors)
+                                ? (
+                                    <React.Fragment>
+                                        <img id="loadingImg" src={process.env.PUBLIC_URL + "./img/rothmanLoading.png"}/>
+                                        <p>loading...</p>
+                                    </React.Fragment>
+                                )
+                                : (
+                                    <React.Fragment>
+                                        <i className="fas fa-exclamation errorIcon"></i>
+                                        <p>Sorry Try Reloading The Page...</p>
+                                    </React.Fragment>
+                                )}
                         </div>
                     )
                 }}

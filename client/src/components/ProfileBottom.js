@@ -13,7 +13,8 @@ class ProfileBottom extends Component {
             <Consumer>
                 {value => {
 
-                    const {details, excludedInRightSideColumn, contactInfo} = this.props.profile;
+                    const {details, excludedInRightSideColumn} = this.props.profile;
+                    const {contactInfo} = details;
                     formatAddress(contactInfo)
                     const contactInfoKeys = Object.keys(contactInfo);
                     const detailsKeys = Object.keys(details);
@@ -34,7 +35,10 @@ class ProfileBottom extends Component {
                                 <div className="bottomLeftSection">
 
                                     {contactInfoKeys.map((data, index) => {
-                                        return (contactInfo[data] === null || contactInfo[data] === undefined || data.toUpperCase().includes("ID"))
+                                        const noData = (contactInfo[data] === null || contactInfo[data] === undefined);
+                                        const isId = (data.toUpperCase().includes("ID"));
+                                        const noValues = (contactInfo[data] && contactInfo[data].length === 0);
+                                        return (noData || isId || noValues)
                                             ? null
                                             : <List key={index} heading={data} list={[contactInfo[data]]}/>
                                     })}
